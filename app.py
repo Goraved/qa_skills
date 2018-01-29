@@ -18,7 +18,10 @@ def get_actual_statistics():
 
 @app.route("/statistics")
 def show_statistics():
-    return render_template('statistics.html')
+    try:
+        return render_template('statistics.html')
+    except:
+        return render_template('index.html')
 
 
 if __name__ == "__main__":
