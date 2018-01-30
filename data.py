@@ -68,7 +68,7 @@ def save_statistics(results):
         # Save statistic by skill
         insert_query = "Insert into statistics (skill_id, skill_percent, date_collected) values (%s,%s,%s);", (
             skill_id, results.get(result), date)
-        cur.execute(insert_query)
+        cur = query(insert_query)
     db.commit()
 
 
