@@ -78,5 +78,5 @@ def get_statistics():
                 file.write(add_table_row([way[0], str(way[1])]))
         file.write(close_table())
         file.write(close_html())
-    save_statistics(skill_percent)
+    # save_statistics(skill_percent)
     close_db()

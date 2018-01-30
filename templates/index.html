@@ -3,6 +3,7 @@
 <title>QA SKILLS</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 <link rel="shortcut icon" href="{{ url_for('static', filename='images/icons/favicon.ico') }}">
@@ -22,6 +23,7 @@ body, html {height: 100%}
 
 
 
+
 </style>
 <body>
 
@@ -32,16 +34,16 @@ body, html {height: 100%}
     <div class="w3-display-middle">
         <h1 class="w3-jumbo w3-animate-top">QA SKILLS ANALYZER</h1>
         <hr class="w3-border-grey" style="margin:auto;width:40%">
-        <p class="w3-large w3-right"><a href="statistics">Show previous</a></p>
+        <p class="w3-large w3-right"><a href="statistics">Show statistics</a></p>
         <div id="wait" class="w3-display-middle"
-             style="display:none;width:69px;height:89px;position:absolute;top:50%;left:50%;padding:25px;">
+             style="display:none;height:0px;position:absolute;top:50%;left:50%;padding:25px;">
             <p class="w3-large w3-center"><img
                     src='https://loading.io/spinners/ellipsis/lg.discuss-ellipsis-preloader.gif' width="120"
-                    height="120"/></p>
+                    height="120"/><br> It take take for 3-5 minutes...</p>
         </div>
         <form class="form-signin" role="form">
             <p class="w3-large w3-left">
-                <button class="btn btn-lg btn-primary btn-block" type="button">Analyze</button>
+                <button class="button button5" type="button">Analyze</button>
             </p>
         </form>
     </div>
