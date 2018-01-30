@@ -39,7 +39,7 @@ def get_vacancies():
     vacancy_links = []
 
     count = 0
-    while len(vacancy_links) <= 480:
+    while len(vacancy_links) <= 5:
         data = [
             ('csrfmiddlewaretoken', 'c6V5lBXwbscVXZdwSq7KTVYGI58dU0N0s1GFi0uWrRkw00Q4MLIyMKdBjFf3ob7e'),
             ('count', count),

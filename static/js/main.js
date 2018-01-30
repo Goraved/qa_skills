@@ -21,5 +21,30 @@
 		$(table1).find(".row100.head ."+column).removeClass('hov-column-head-'+ verTable);
 	});
     
-
+$(function(){
+	$('button').click(function(){
+		$.ajax({
+			url: '/get_stat',
+			data: $('form').serialize(),
+			type: 'POST',
+			success: function(response){
+				console.log(response);
+				window.location.href = "/statistics"
+			},
+			error: function(error){
+				console.log(error);
+			}
+		});
+	});
+	$(document).ajaxStart(function(){
+        $("#wait").css("display", "block");
+    });
+    $(document).ajaxComplete(function(){
+        $("#wait").css("display", "none");
+    });
+    $("button").click(function(){
+        $("#txt").load("demo_ajax_load.asp");
+    });
+});
 })(jQuery);
+

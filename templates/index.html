@@ -6,6 +6,8 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 <link rel="shortcut icon" href="{{ url_for('static', filename='images/icons/favicon.ico') }}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="static/js/main.js"></script>
 <style>
 body,h1 {font-family: "Raleway", sans-serif}
 body, html {height: 100%}
@@ -15,22 +17,38 @@ body, html {height: 100%}
     background-position: center;
     background-size: cover;
 }
+
+
+
+
+
 </style>
 <body>
 
 <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
     <div class="w3-display-topleft w3-padding-large w3-xlarge">
-        Based on <a href = "https://jobs.dou.ua" target="_blank">DOU.UA</a> vacancies
+        Based on <a href="https://jobs.dou.ua" target="_blank">DOU.UA</a> vacancies
     </div>
     <div class="w3-display-middle">
         <h1 class="w3-jumbo w3-animate-top">QA SKILLS ANALYZER</h1>
         <hr class="w3-border-grey" style="margin:auto;width:40%">
-        <p class="w3-large w3-left"><a href="get_statistics">Analyze</a></p>
         <p class="w3-large w3-right"><a href="statistics">Show previous</a></p>
+        <div id="wait" class="w3-display-middle"
+             style="display:none;width:69px;height:89px;position:absolute;top:50%;left:50%;padding:25px;">
+            <p class="w3-large w3-center"><img
+                    src='https://loading.io/spinners/ellipsis/lg.discuss-ellipsis-preloader.gif' width="120"
+                    height="120"/></p>
+        </div>
+        <form class="form-signin" role="form">
+            <p class="w3-large w3-left">
+                <button class="btn btn-lg btn-primary btn-block" type="button">Analyze</button>
+            </p>
+        </form>
     </div>
     <div class="w3-display-bottomleft w3-padding-large">
         <a href="https://github.com/Goraved" target="_blank">Goraved</a> 2018
     </div>
+
 </div>
 
 </body>

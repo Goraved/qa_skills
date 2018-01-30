@@ -10,13 +10,10 @@ def main():
     return render_template('index.html')
 
 
-@app.route("/get_statistics")
-def get_actual_statistics():
-    try:
-        get_statistics()
-        return render_template('statistics.html')
-    except:
-        return render_template('statistics.html')
+@app.route('/get_stat', methods=['POST'])
+def get_stat():
+    get_statistics()
+    return render_template('statistics.html')
 
 
 @app.route("/statistics")
