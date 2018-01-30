@@ -12,8 +12,11 @@ def main():
 
 @app.route("/get_statistics")
 def get_actual_statistics():
-    get_statistics()
-    return render_template('statistics.html')
+    try:
+        get_statistics()
+        return render_template('statistics.html')
+    except:
+        return render_template('statistics.html')
 
 
 @app.route("/statistics")
