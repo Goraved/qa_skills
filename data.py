@@ -2,19 +2,20 @@ import time
 
 import MySQLdb
 
-db = MySQLdb.connect(user='qaskills', password='Cf4V~g336_8Z',
-                     host='den1.mysql5.gear.host',
-                     database='qaskills', connect_timeout=6000)
-
 
 def query(sql):
+    db = MySQLdb.connect(user='qaskills', password='Cf4V~g336_8Z',
+                         host='den1.mysql5.gear.host',
+                         database='qaskills', connect_timeout=600)
     try:
         cursor = db.cursor()
         cursor.execute(sql)
     except (AttributeError, MySQLdb.OperationalError):
-        
+        db.ping(True)
         cursor = db.cursor()
         cursor.execute(sql)
+    db.commit()
+    db.close()
     return cursor
 
 
@@ -64,7 +65,6 @@ def save_statistics(results):
     date = time.strftime('%Y-%m-%d')
     # Delete previous data by current date
     cur = query("Delete from statistics where date_collected = '%s'" % date)
-    db.commit()
     for result in results:
         # Get skill id
         skill_id = skills.get(result)
@@ -73,8 +73,8 @@ def save_statistics(results):
             skill_id, results.get(result), date)
         cur = query(insert_query)
     cur.close()
-    db.commit()
-
-
-def close_db():
-    db.close()
+#
+#
+#
+# def close_db():
+#     db.close()
