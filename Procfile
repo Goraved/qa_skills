@@ -1,1 +1,1 @@
-web: gunicorn qa_skills:app
+web: python app.py
