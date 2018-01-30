@@ -14,4 +14,4 @@ Jinja2==2.7.3
 MarkupSafe==0.23
 Werkzeug==0.10.1
 itsdangerous==0.24
-lxml==3.2.5
+https://pypi.python.org/packages/1b/e8/ce25c547daf9b84cafea605eb8a5709524fb53e1b3bb5ef6884e561b9d34/lxml-3.8.0-cp27-cp27mu-manylinux1_x86_64.whl#md5=2ab7288c05fe8a4c224fa48d4456e8f
