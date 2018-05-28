@@ -64,11 +64,11 @@ def get_latest_statistics():
     cur = query("Select date_collected from statistics order by date_collected desc limit 1;")
     for row in cur.fetchall():
         latest = row[0]
-    cur = query("""SELECT sk.name, st.skill_percent, st.skill_count  FROM statistics as st 
+    cur = query("""SELECT sk.name, st.skill_percent, st.skill_count, st.date_collected  FROM statistics as st 
 JOIN skills as sk on st.skill_id = sk.id
 where date_collected = '{}' order by st.skill_count DESC;""".format(latest))
     for row in cur.fetchall():
-        stat.append({'title': row[0], 'percent': row[1], 'count': row[2]})
+        stat.append({'title': row[0], 'percent': row[1], 'count': row[2], 'date': row[3]})
     return stat
 
 
@@ -96,6 +96,20 @@ where date_collected = '{}' order by ps.count DESC;""".format(latest))
     for row in cur.fetchall():
         positions_stat.append({'title': row[0], 'count': row[1]})
     return positions_stat
+
+
+def get_latest_vacancies_statistics():
+    vacancies_stat = []
+    cur = query("Select date_collected from vacancies order by date_collected desc limit 1;")
+    for row in cur.fetchall():
+        latest = row[0]
+    cur = query("""SELECT *  FROM vacancies
+where date_collected = '{}';""".format(latest))
+    for row in cur.fetchall():
+        vacancies_stat.append(
+            {'vacancy_title': row[1], 'vacancy_link': row[4], 'company_title': row[2], 'company_link': row[6],
+             'city_title': row[3]})
+    return vacancies_stat
 
 
 def save_statistics(percent, count):
@@ -157,5 +171,22 @@ def save_ways(values):
         # Save statistic by way
         list.append((way_id, values.get(result), date))
     insert_query = "Insert into ways_statistics (ways_id, count, date_collected) values (%s, %s, %s);"
+    cur = query(insert_query, list=list, many=True)
+    cur.close()
+
+
+def save_vacancies(values):
+    # Get vacancies list
+    vacancies = {}
+    # Get current date
+    date = time.strftime('%Y-%m-%d')
+    # Delete previous data by current date
+    cur = query("Delete from vacancies where date_collected = '%s'" % date)
+    list = []
+    for result in values:
+        # Save vacancies
+        list.append((result['vacancy_title'], result['vacancy_link'], result['company_title'], result['company_link'],
+                     result['city_title'], date))
+    insert_query = "Insert into vacancies (vacancy, url, company, company_url, city, date_collected) values (%s, %s, %s, %s, %s, %s);"
     cur = query(insert_query, list=list, many=True)
     cur.close()

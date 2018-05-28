@@ -40,8 +40,10 @@ def get_statistics():
         Stat.skills = find_in_text(Stat.skills, vacancy_desciption)
         Stat.ways = find_in_text(Stat.ways, vacancy_title)
         Stat.position = find_in_text(Stat.positions, vacancy_title)
-        Stat.total_info.append([[vacancy_link, vacancy_title], [company_link, company_title], city_title])
-    for skill in Stat.skills:
-        percent = str(round(float(Stat.skills[skill] / len(vacancy_links)) * 100, 2)) + '%'
-        if Stat.skills[skill] > 0:
-            Stat.skill_percent.update({skill: percent})
+        Stat.total_info.append(
+            {'vacancy_link': vacancy_link, 'vacancy_title': vacancy_title, 'company_link': company_link,
+             'company_title': company_title, 'city_title': city_title})
+        for skill in Stat.skills:
+            percent = str(round(float(Stat.skills[skill] / len(vacancy_links)) * 100, 2)) + '%'
+            if Stat.skills[skill] > 0:
+                Stat.skill_percent.update({skill: percent})

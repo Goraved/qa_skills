@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>QA skills</title>
+    <title>QA skills | Statistics</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/icons/favicon.ico') }}">
@@ -24,8 +24,11 @@
 <div class="limiter">
     <div class="container-table100">
         <div class="wrap-table100">
-            <h1>Actual QA skills based on vacancies from DOU.ua</h1>
-            <h2>(Total vacancies : 520)</h2>
+            <h1>Actual QA skills based on vacancies from <a href="https://jobs.dou.ua" target="_blank">DOU.UA</a></h1>
+            {% for t in tech %}
+            <h2>(Total vacancies : {{t['vac_count']}})</h2>
+            <h3>Collected at {{t['date_collected']}}</h3>
+            {% endfor %}
             <hr>
             <h3>SKILLS</h3>
             <div class="table100 ver3 m-b-110">
@@ -74,11 +77,11 @@
                         <tbody>
                         {% for link in links %}
                         <tr class="row100 body">
-                            <td class="cell100 column1"><a href='{{link["link"]}}'
-                                                           target=_blank>{{link['title']}}</a></td>
-                            <td class="cell100 column2"><a href='{{link["company_link"]}}' target=_blank>{{link['company']}}</a>
+                            <td class="cell100 column1"><a href='{{link["vacancy_link"]}}'
+                                                           target=_blank>{{link['vacancy_title']}}</a></td>
+                            <td class="cell100 column2"><a href='{{link["company_link"]}}' target=_blank>{{link['company_title']}}</a>
                             </td>
-                            <td class="cell100 column3">{{link['city']}}</td>
+                            <td class="cell100 column3">{{link['city_title']}}</td>
                         </tr>
                         {% endfor %}
                         </tbody>
@@ -151,6 +154,8 @@
          		ps.update();
          	})
          });
+
+
 
 
 
