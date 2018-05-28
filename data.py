@@ -10,6 +10,13 @@ def query(sql, **kwargs):
                          database=os.environ['db_database'], connect_timeout=600)
     try:
         cursor = db.cursor()
+        cursor.execute("""SET NAMES 'utf8';
+    SET CHARACTER SET 'utf8';
+    SET SESSION collation_connection = 'utf8_general_ci';""")
+    except:
+        pass
+    try:
+        cursor = db.cursor()
         if kwargs.get('many', False):
             cursor.executemany(sql, kwargs.get('list', []))
         else:
@@ -103,8 +110,7 @@ def get_latest_vacancies_statistics():
     cur = query("Select date_collected from vacancies order by date_collected desc limit 1;")
     for row in cur.fetchall():
         latest = row[0]
-    cur = query("""SELECT *  FROM vacancies
-where date_collected = '{}';""".format(latest))
+    cur = query("SELECT *  FROM vacancies where date_collected = '{}';".format(latest))
     for row in cur.fetchall():
         vacancies_stat.append(
             {'vacancy_title': row[1], 'vacancy_link': row[4], 'company_title': row[2], 'company_link': row[6],
