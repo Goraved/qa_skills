@@ -6,7 +6,7 @@ import MySQLdb
 
 def query(sql, **kwargs):
     db = MySQLdb.connect(user=os.environ['db_user'], password=os.environ['db_password'],
-                         host=os.environ['db_host'],
+                         host=os.environ['db_host'], charset='utf8',
                          database=os.environ['db_database'], connect_timeout=600)
     try:
         cursor = db.cursor()
