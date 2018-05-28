@@ -1,3 +1,4 @@
+import os
 import re
 
 import requests
@@ -39,7 +40,11 @@ def get_vacancies():
     vacancy_links = []
 
     count = 0
-    while len(vacancy_links) <= 480:
+    if os.environ['app_type'] == 'remote':
+        max_count = 20
+    else:
+        max_count = 10
+    while len(vacancy_links) <= max_count:
         data = [
             ('csrfmiddlewaretoken', 'c6V5lBXwbscVXZdwSq7KTVYGI58dU0N0s1GFi0uWrRkw00Q4MLIyMKdBjFf3ob7e'),
             ('count', count),

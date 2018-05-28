@@ -23,6 +23,7 @@
     
 $(function(){
 	$('button').click(function(){
+	for(var i = 0; i < 1; i++){
 		$.ajax({
 			url: '/get_stat',
 			data: $('form').serialize(),
@@ -35,7 +36,7 @@ $(function(){
 				console.log(error);
 			}
 		});
-	});
+	}});
 	$(document).ajaxStart(function(){
         $("#wait").css("display", "block");
     });

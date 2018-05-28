@@ -7,4 +7,4 @@ PYTHONPATH="${PYTHONPATH}:${dir}"
 export PYTHONPATH
 
 
-python parse.py
+python app.py
