@@ -28,6 +28,10 @@ def save_data():
     save_statistics(Stat.skill_percent, Stat.skills)
     save_ways(Stat.ways)
     save_vacancies(Stat.total_info)
+    Stat.positions = None
+    Stat.ways = None
+    Stat.skill_percent = None
+    Stat.skills = None
     return redirect('/statistics')
 
 
