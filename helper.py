@@ -43,7 +43,7 @@ def get_vacancies():
     if os.environ['app_type'] == 'remote':
         max_count = 20
     else:
-        max_count = 250
+        max_count = 20
     while len(vacancy_links) <= max_count:
         data = [
             ('csrfmiddlewaretoken', 'c6V5lBXwbscVXZdwSq7KTVYGI58dU0N0s1GFi0uWrRkw00Q4MLIyMKdBjFf3ob7e'),

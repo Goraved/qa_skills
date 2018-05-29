@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, url_for
 
 from parse import *
 
@@ -14,7 +14,7 @@ def main():
 @app.route('/get_stat', methods=['POST'])
 def get_stat():
     get_statistics()
-    return redirect('/save_data')
+    return redirect(url_for('save_data'))
 
 
 # Get list of all vacancies
@@ -28,11 +28,12 @@ def save_data():
     save_statistics(Stat.skill_percent, Stat.skills)
     save_ways(Stat.ways)
     save_vacancies(Stat.total_info)
-    Stat.positions = None
-    Stat.ways = None
-    Stat.skill_percent = None
-    Stat.skills = None
-    return redirect('/statistics')
+    Stat.positions = {}
+    Stat.ways = {}
+    Stat.skill_percent = {}
+    Stat.skills = {}
+    Stat.total_info = []
+    return redirect(url_for('show_statistics'))
 
 
 @app.route("/statistics")

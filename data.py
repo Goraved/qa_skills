@@ -2,32 +2,38 @@ import os
 import time
 
 import MySQLdb
+import gevent as gevent
 
 
 def query(sql, **kwargs):
-    db = MySQLdb.connect(user=os.environ['db_user'], password=os.environ['db_password'],
-                         host=os.environ['db_host'], charset='utf8',
-                         database=os.environ['db_database'], connect_timeout=600)
-    try:
-        cursor = db.cursor()
-        cursor.execute("""SET NAMES 'utf8';
-    SET CHARACTER SET 'utf8';
-    SET SESSION collation_connection = 'utf8_general_ci';""")
-    except:
-        pass
-    try:
-        cursor = db.cursor()
-        if kwargs.get('many', False):
-            cursor.executemany(sql, kwargs.get('list', []))
-        else:
-            cursor.execute(sql)
-    except (AttributeError, MySQLdb.OperationalError):
-        db.ping(True)
-        cursor = db.cursor()
-        cursor.execute(sql)
-    db.commit()
-    db.close()
-    return cursor
+    for i in range(10):
+        try:
+            db = MySQLdb.connect(user=os.environ['db_user'], password=os.environ['db_password'],
+                                 host=os.environ['db_host'], charset='utf8',
+                                 database=os.environ['db_database'], connect_timeout=600)
+            try:
+                cursor = db.cursor()
+                cursor.execute("""SET NAMES 'utf8';
+            SET CHARACTER SET 'utf8';
+            SET SESSION collation_connection = 'utf8_general_ci';""")
+            except:
+                pass
+            try:
+                cursor = db.cursor()
+                if kwargs.get('many', False):
+                    cursor.executemany(sql, kwargs.get('list', []))
+                else:
+                    cursor.execute(sql)
+            except (AttributeError, MySQLdb.OperationalError):
+                db.ping(True)
+                cursor = db.cursor()
+                cursor.execute(sql)
+            db.commit()
+            db.close()
+            return cursor
+        except:
+            gevent.sleep(1)
+            continue
 
 
 def get_skills():

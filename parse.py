@@ -4,16 +4,18 @@ from helper import *
 
 class Stat:
     total_info = []
-    skills = get_skills()
-    positions = get_positions()
-    ways = get_ways()
+    skills = {}
+    positions = {}
+    ways = {}
     links = []
     skill_percent = {}
 
 
 def get_statistics():
     vacancy_links = get_vacancies()
-
+    Stat.skills = get_skills()
+    Stat.positions = get_positions()
+    Stat.ways = get_ways()
     # GO to each vacancy
     for index, link in enumerate(vacancy_links):
         vacancy = requests.get(link.attrib.get('href').replace('\\', '').replace('"', ""), headers=headers)
