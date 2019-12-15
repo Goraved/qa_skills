@@ -52,40 +52,11 @@ function scrollFunction() {
 	});
 })(jQuery);
 
-function polling(res) {
-    var status = 'False'
-    while (status === 'False') {
-	$.ajax(`/TaskStatus/${res}`, {
-		method: "GET",
-		success: function (response) {
-			status = response;
-			sleep(2000);
-		},
-	})
-}
-
-	$(document).ajaxStart(function () {
-		$("#wait").css("display", "block");
-	});
-	$(document).ajaxComplete(function () {
-		$("#wait").css("display", "none");
-	});
-	$("button").click(function () {
-		$("#txt").load("demo_ajax_load.asp");
-	});
-}
-
-function sleep(milliseconds) {
-  const date = Date.now();
-  let currentDate = null;
-  do {
-    currentDate = Date.now();
-  } while (currentDate - date < milliseconds);
-}
-
+var ind = 0;
 function poll(id) {
     $.get('/TaskStatus/'+id, function(result) {
-        if(result != 'True') {
+        if(result != 'True' && ind < 3) {
+            ind++;
             $("#wait").css("display", "block");
             $("#analyze").prop( "disabled", true );
             setTimeout(poll.bind(null, id), 5000);

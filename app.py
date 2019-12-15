@@ -1,19 +1,21 @@
 import random
 import string
+import threading
 
 from flask import Flask, render_template, redirect, url_for
 
 from parse import *
 
 app = Flask(__name__)
-import threading
+
+tasks = {}
 
 
 class AsyncTask(threading.Thread):
     def __init__(self, task_id):
         super().__init__()
         self.task_id = task_id
-        os.environ[task_id] = 'False'
+        tasks[task_id] = 'False'
 
     def run(self):
         get_statistics()
@@ -26,7 +28,7 @@ class AsyncTask(threading.Thread):
         Stat.skill_percent = {}
         Stat.skills = {}
         Stat.total_info = []
-        os.environ[self.task_id] = 'True'
+        tasks[self.task_id] = 'True'
 
 
 @app.route("/")
@@ -46,7 +48,7 @@ def get_stat():
 
 @app.route('/TaskStatus/<int:task_id>')
 def task_status(task_id):
-    return os.getenv(str(task_id), 'False')
+    return tasks[str(task_id)]
 
 
 # Get list of all vacancies
