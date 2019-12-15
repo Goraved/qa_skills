@@ -40,6 +40,7 @@ def main():
 @app.route('/get_stat', methods=['POST'])
 def get_stat():
     task_id = ''.join([random.choice(string.digits) for _ in range(16)])
+    tasks[task_id] = 'False'
     async_task = AsyncTask(task_id=task_id)
     async_task.start()
     task_status_url = url_for('task_status', task_id=task_id)
