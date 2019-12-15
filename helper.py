@@ -12,7 +12,7 @@ headers = {
 
 def find_in_text(list_item, text):
     for item in list_item:
-        if re.search(re.escape(item), text, re.IGNORECASE) is not None:
+        if re.search(r"\b" + re.escape(item) + r"\b", text, re.IGNORECASE) is not None:
             list_item[item] += 1
     return list_item
 
@@ -40,7 +40,7 @@ def get_vacancies():
 
     count = 0
 
-    max_count = 300
+    max_count = 500
     while len(vacancy_links) <= max_count:
         data = [
             ('csrfmiddlewaretoken', 'c6V5lBXwbscVXZdwSq7KTVYGI58dU0N0s1GFi0uWrRkw00Q4MLIyMKdBjFf3ob7e'),
