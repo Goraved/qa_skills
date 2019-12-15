@@ -8,14 +8,11 @@ from parse import *
 
 app = Flask(__name__)
 
-tasks = {}
-
 
 class AsyncTask(threading.Thread):
     def __init__(self, task_id):
         super().__init__()
         self.task_id = task_id
-        tasks[task_id] = 'False'
 
     def run(self):
         get_statistics()
@@ -28,7 +25,7 @@ class AsyncTask(threading.Thread):
         Stat.skill_percent = {}
         Stat.skills = {}
         Stat.total_info = []
-        tasks[self.task_id] = 'True'
+        complete_task(self.task_id)
 
 
 @app.route("/")
@@ -40,7 +37,7 @@ def main():
 @app.route('/get_stat', methods=['POST'])
 def get_stat():
     task_id = ''.join([random.choice(string.digits) for _ in range(16)])
-    tasks[task_id] = 'False'
+    create_task(task_id)
     async_task = AsyncTask(task_id=task_id)
     async_task.start()
     task_status_url = url_for('task_status', task_id=task_id)
@@ -49,7 +46,7 @@ def get_stat():
 
 @app.route('/TaskStatus/<int:task_id>')
 def task_status(task_id):
-    return tasks[str(task_id)]
+    return get_task_state(task_id)
 
 
 # Get list of all vacancies

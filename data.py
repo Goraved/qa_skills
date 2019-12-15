@@ -1,5 +1,6 @@
 import os
 import time
+from datetime import datetime
 
 import MySQLdb
 import gevent as gevent
@@ -42,6 +43,24 @@ def get_skills():
     for row in cur.fetchall():
         skills.update({row[1]: 0})
     return skills
+
+
+def get_task_state(task_key):
+    tasks = []
+    cur = query(f"Select task_state from tasks where task_key like '{task_key}';")
+    for row in cur.fetchall():
+        tasks.append(row[0])
+    return tasks[0]
+
+
+def create_task(task_key):
+    cur_date = datetime.now()
+    query(f"Insert into tasks (task_key, task_state, date_created) values ({task_key}, 'False', '{cur_date}');")
+
+
+def complete_task(task_key):
+    cur_date = datetime.now()
+    query(f"Update tasks set task_state='True', date_finished='{cur_date}' where task_key like '{task_key}';")
 
 
 def get_positions():
