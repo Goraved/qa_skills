@@ -1,3 +1,4 @@
+import celery as celery
 from flask import Flask, render_template, redirect, url_for
 
 from parse import *
@@ -13,8 +14,8 @@ def main():
 # Start process of gathering statistics
 @app.route('/get_stat', methods=['POST'])
 def get_stat():
-    get_statistics()
-    return redirect(url_for('save_data'))
+    save_data.delay()
+    # return redirect(url_for('save_data'))
 
 
 # Get list of all vacancies
@@ -22,8 +23,10 @@ def get_vac():
     return get_vacancies()
 
 
-@app.route('/save_data')
+# @app.route('/save_data')
+@celery.task(bind=True)
 def save_data():
+    get_statistics()
     save_positions(Stat.positions)
     save_statistics(Stat.skill_percent, Stat.skills)
     save_ways(Stat.ways)
