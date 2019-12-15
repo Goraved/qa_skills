@@ -1,9 +1,32 @@
-import celery as celery
+import random
+import string
+
 from flask import Flask, render_template, redirect, url_for
 
 from parse import *
 
 app = Flask(__name__)
+import threading
+
+
+class AsyncTask(threading.Thread):
+    def __init__(self, task_id):
+        super().__init__()
+        self.task_id = task_id
+        os.environ[task_id] = 'False'
+
+    def run(self):
+        get_statistics()
+        save_positions(Stat.positions)
+        save_statistics(Stat.skill_percent, Stat.skills)
+        save_ways(Stat.ways)
+        save_vacancies(Stat.total_info)
+        Stat.positions = {}
+        Stat.ways = {}
+        Stat.skill_percent = {}
+        Stat.skills = {}
+        Stat.total_info = []
+        os.environ[self.task_id] = 'True'
 
 
 @app.route("/")
@@ -14,8 +37,16 @@ def main():
 # Start process of gathering statistics
 @app.route('/get_stat', methods=['POST'])
 def get_stat():
-    save_data.delay()
-    # return redirect(url_for('save_data'))
+    task_id = ''.join([random.choice(string.digits) for _ in range(16)])
+    async_task = AsyncTask(task_id=task_id)
+    async_task.start()
+    task_status_url = url_for('task_status', task_id=task_id)
+    return task_id
+
+
+@app.route('/TaskStatus/<int:task_id>')
+def task_status(task_id):
+    return os.getenv(str(task_id), 'False')
 
 
 # Get list of all vacancies
@@ -23,14 +54,8 @@ def get_vac():
     return get_vacancies()
 
 
-# @app.route('/save_data')
-@celery.task(bind=True)
+@app.route('/save_data')
 def save_data():
-    get_statistics()
-    save_positions(Stat.positions)
-    save_statistics(Stat.skill_percent, Stat.skills)
-    save_ways(Stat.ways)
-    save_vacancies(Stat.total_info)
     Stat.positions = {}
     Stat.ways = {}
     Stat.skill_percent = {}

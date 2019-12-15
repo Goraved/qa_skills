@@ -41,7 +41,6 @@ def get_skills():
     cur = query("Select * from skills")
     for row in cur.fetchall():
         skills.update({row[1]: 0})
-    cur.close()
     return skills
 
 
@@ -50,7 +49,6 @@ def get_positions():
     cur = query("Select * from positions")
     for row in cur.fetchall():
         positions.update({row[1]: 0})
-    cur.close()
     return positions
 
 
@@ -59,7 +57,6 @@ def get_ways():
     cur = query("Select * from ways")
     for row in cur.fetchall():
         ways.update({row[1]: 0})
-    cur.close()
     return ways
 
 
@@ -68,7 +65,6 @@ def get_english():
     cur = query("Select * from english")
     for row in cur.fetchall():
         english.update({row[1]: 0})
-    cur.close()
     return english
 
 
@@ -142,7 +138,6 @@ def save_statistics(percent, count):
         list.append((skill_id, count[result], percent.get(result), date))
     insert_query = "Insert into statistics (skill_id, skill_count, skill_percent, date_collected) values (%s, %s, %s, %s);"
     cur = query(insert_query, list=list, many=True)
-    cur.close()
 
 
 def save_positions(values):
@@ -163,7 +158,6 @@ def save_positions(values):
         list.append((position_id, values.get(result), date))
     insert_query = "Insert into positions_statistics (position_id, count, date_collected) values (%s, %s, %s);"
     cur = query(insert_query, list=list, many=True)
-    cur.close()
 
 
 def save_ways(values):
@@ -184,7 +178,6 @@ def save_ways(values):
         list.append((way_id, values.get(result), date))
     insert_query = "Insert into ways_statistics (ways_id, count, date_collected) values (%s, %s, %s);"
     cur = query(insert_query, list=list, many=True)
-    cur.close()
 
 
 def save_vacancies(values):
@@ -201,4 +194,3 @@ def save_vacancies(values):
                      result['city_title'], date))
     insert_query = "Insert into vacancies (vacancy, url, company, company_url, city, date_collected) values (%s, %s, %s, %s, %s, %s);"
     cur = query(insert_query, list=list, many=True)
-    cur.close()

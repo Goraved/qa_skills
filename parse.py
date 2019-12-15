@@ -24,6 +24,8 @@ def get_statistics():
         vacancy_link = link.attrib.get('href').replace('\\', '').replace('"', "")
         # Get company link and title
         company = html.fromstring(vacancy.text).xpath("//div[@class='info']/div/a[1]")
+        if not company:
+            continue
         company_title = company[0].text.replace('\\u00a0', ' ')
         company_link = company[0].get('href').replace('\\', '').replace('"', "")
         try:

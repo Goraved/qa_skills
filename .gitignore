@@ -1,2 +1,9 @@
+# IDEA
 .DS_Store
 .idea/
+
+
+# Python
+venv/
+.pytest_cache
+__pycache__
