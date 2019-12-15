@@ -213,6 +213,7 @@ th, td {
 }
 
 .column1 {
+  max-width: 100px;
   width: 33%;
   padding-left: 40px;
 }
