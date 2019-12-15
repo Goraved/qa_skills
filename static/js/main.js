@@ -55,7 +55,7 @@ function scrollFunction() {
 var ind = 0;
 function poll(id) {
     $.get('/TaskStatus/'+id, function(result) {
-        if(result != 'True' && ind < 3) {
+        if(result != 'True' && ind < 60) {
             ind++;
             $("#wait").css("display", "block");
             $("#analyze").prop( "disabled", true );
