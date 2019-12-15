@@ -87,11 +87,13 @@ function poll(id) {
     $.get('/TaskStatus/'+id, function(result) {
         if(result != 'True') {
             $("#wait").css("display", "block");
+            $("#analyze").prop( "disabled", true );
             setTimeout(poll.bind(null, id), 5000);
         }
         else{
-                    window.location.href = "/statistics"
+            window.location.href = "/statistics"
             $("#wait").css("display", "none");
+            $("#analyze").prop( "disabled", false );
         }
     })
 }
