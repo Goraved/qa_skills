@@ -20,12 +20,14 @@ def get_statistics():
     for index, link in enumerate(vacancy_links):
         vacancy = requests.get(link.attrib.get('href').replace('\\', '').replace('"', ""), headers=headers)
         # Get vacancy link and title
+        if not link.text:
+            link.text = '-- Couldn\'t parse title :('
         vacancy_title = link.text.replace('\\u00a0', ' ')
         vacancy_link = link.attrib.get('href').replace('\\', '').replace('"', "")
         # Get company link and title
         company = html.fromstring(vacancy.text).xpath("//div[@class='info']/div/a[1]")
         if not company:
-            continue
+            company[0].text = '-- Couldn\'t parse company :('
         company_title = company[0].text.replace('\\u00a0', ' ')
         company_link = company[0].get('href').replace('\\', '').replace('"', "")
         try:

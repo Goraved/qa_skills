@@ -68,3 +68,9 @@ function poll(id) {
         }
     })
 }
+
+var myLink = document.getElementById('mylink');
+
+function hintAlert() {
+  alert("The program gathers 500+ QA vacancies from the DOU.UA, parses vacancies info and make a statistics based on predefined skill keywords.");
+}
