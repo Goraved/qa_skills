@@ -1,3 +1,4 @@
+import asyncio
 import os
 import time
 from datetime import datetime
@@ -37,7 +38,8 @@ def query(sql, **kwargs):
             continue
 
 
-def get_skills():
+async def get_skills():
+    await asyncio.sleep(0)
     skills = {}
     cur = query("Select * from skills")
     for row in cur.fetchall():
@@ -63,7 +65,8 @@ def complete_task(task_key):
     query(f"Update tasks set task_state='True', date_finished='{cur_date}' where task_key like '{task_key}';")
 
 
-def get_positions():
+async def get_positions():
+    await asyncio.sleep(0)
     positions = {}
     cur = query("Select * from positions")
     for row in cur.fetchall():
@@ -71,7 +74,8 @@ def get_positions():
     return positions
 
 
-def get_ways():
+async def get_ways():
+    await asyncio.sleep(0)
     ways = {}
     cur = query("Select * from ways")
     for row in cur.fetchall():
@@ -209,6 +213,8 @@ def save_vacancies(values):
     list = []
     for result in values:
         # Save vacancies
+        if not result:
+            continue
         list.append((result['vacancy_title'], result['vacancy_link'], result['company_title'], result['company_link'],
                      result['city_title'], date))
     insert_query = "Insert into vacancies (vacancy, url, company, company_url, city, date_collected) values (%s, %s, %s, %s, %s, %s);"

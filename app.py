@@ -13,18 +13,19 @@ class AsyncTask(threading.Thread):
     def __init__(self, task_id):
         super().__init__()
         self.task_id = task_id
+        self.get_st = GetStat()
 
     def run(self):
-        get_statistics()
-        save_positions(Stat.positions)
-        save_statistics(Stat.skill_percent, Stat.skills)
-        save_ways(Stat.ways)
-        save_vacancies(Stat.total_info)
-        Stat.positions = {}
-        Stat.ways = {}
-        Stat.skill_percent = {}
-        Stat.skills = {}
-        Stat.total_info = []
+        st = self.get_st.get_statistics()
+        save_positions(st.positions)
+        save_statistics(st.skill_percent, st.skills)
+        save_ways(st.ways)
+        save_vacancies(st.total_info)
+        st.positions = {}
+        st.ways = {}
+        st.skill_percent = {}
+        st.skills = {}
+        st.total_info = []
         complete_task(self.task_id)
 
 
@@ -47,11 +48,6 @@ def get_stat():
 @app.route('/TaskStatus/<int:task_id>')
 def task_status(task_id):
     return get_task_state(task_id)
-
-
-# Get list of all vacancies
-def get_vac():
-    return get_vacancies()
 
 
 @app.route('/save_data')

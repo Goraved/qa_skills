@@ -1,3 +1,4 @@
+import asyncio
 import re
 
 import requests
@@ -24,7 +25,8 @@ def order_dic_desc(dictionary):
     return [(k, v) for v, k in items]
 
 
-def get_vacancies():
+async def get_vacancies():
+    await asyncio.sleep(0)
     cookies = {
         'csrftoken': 'JzvFajkcrm5YnSCZ0reV47uW4jO1IhKfZugf7IRCHLdzqTfxUMPJXWJRFTVRcs4t',
         '_ga': 'GA1.2.1912596478.1516990675',
