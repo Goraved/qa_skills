@@ -21,6 +21,7 @@ class AsyncTask(threading.Thread):
         save_statistics(st.skill_percent, st.skills)
         save_ways(st.ways)
         save_vacancies(st.total_info)
+        delete_stats_older_than_month()
         st.positions = {}
         st.ways = {}
         st.skill_percent = {}
@@ -61,13 +62,33 @@ def save_data():
 
 
 @app.route("/statistics")
-def show_statistics():
-    links = get_latest_vacancies_statistics()
-    positions = get_latest_positions_statistics()
-    ways = get_latest_ways_statistics()
-    stats = get_latest_statistics()
+def show_latest_statistics():
+    dates = get_dates()
+    info = get_stats(dates[0])
+    return render_template('statistics.html', links=info[0], stats=info[1], positions=info[2], ways=info[3],
+                           tech=info[4], dates=dates)
+
+
+@app.route("/statistic/<date>")
+def show_specific_statistics(date):
+    dates = get_dates()
+    info = get_stats(date)
+    return render_template('statistics.html', links=info[0], stats=info[1], positions=info[2], ways=info[3],
+                           tech=info[4], dates=dates)
+
+
+def get_stats(date):
+    iloop = asyncio.new_event_loop()
+    asyncio.set_event_loop(iloop)
+    tasks = [get_vacancies_statistics_by_date(date), get_positions_statistics_by_date(date),
+             get_ways_statistics_by_date(date), get_statistics_by_date(date)]
+    a_results = iloop.run_until_complete(asyncio.gather(*tasks))
+    links = a_results[0]
+    positions = a_results[1]
+    ways = a_results[2]
+    stats = a_results[3]
     tech = [{'vac_count': len(links), 'date_collected': stats[0]['date']}]
-    return render_template('statistics.html', links=links, stats=stats, positions=positions, ways=ways, tech=tech)
+    return links, stats, positions, ways, tech
 
 
 if __name__ == "__main__":

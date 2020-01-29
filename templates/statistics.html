@@ -5,13 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/icons/favicon.ico') }}">
-    <link rel="stylesheet" type="text/css" href="static/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="static/vendor/animate/animate.css">
-    <link rel="stylesheet" type="text/css" href="static/vendor/select2/select2.min.css">
-    <link rel="stylesheet" type="text/css" href="static/vendor/perfect-scrollbar/perfect-scrollbar.css">
-    <link rel="stylesheet" type="text/css" href="static/css/util.css">
-    <link rel="stylesheet" type="text/css" href="static/css/main.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/animate/animate.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/select2/select2.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/perfect-scrollbar/perfect-scrollbar.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/util.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 </head>
@@ -28,7 +28,17 @@
             <h1>Actual QA skills based on vacancies from <a href="https://jobs.dou.ua" target="_blank">DOU.UA</a></h1>
             {% for t in tech %}
             <h2>(Total vacancies : {{t['vac_count']}})</h2>
-            <h3>Collected at {{t['date_collected']}}</h3>
+            <h3>Collected at <select onchange="window.document.location.href=this.options[this.selectedIndex].value;">
+                {% for date in dates %}
+                {% if t['date_collected'] == date %}
+                <option selected value="/statistic/{{t['date_collected']}}">{{t['date_collected']}}</option>
+                {% else %}
+                <option value="/statistic/{{date}}" style="color:black">{{date}}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+                <!--            <h3>Collected at {{t['date_collected']}}-->
+            </h3>
             {% endfor %}
             <hr>
             <h3>SKILLS</h3>
@@ -154,7 +164,11 @@
          	$(window).on('resize', function(){
          		ps.update();
          	})
-         });</script>
+         });
+
+
+
+</script>
 <script src="static/js/main.js"></script>
 </body>
 </html>

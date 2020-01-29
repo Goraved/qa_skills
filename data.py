@@ -47,6 +47,10 @@ async def get_skills():
     return skills
 
 
+def delete_stats_older_than_month():
+    query("DELETE FROM statistics WHERE date_collected < NOW() - interval 31 DAY")
+
+
 def get_task_state(task_key):
     tasks = []
     cur = query(f"Select task_state from tasks where task_key like '{task_key}';")
@@ -91,51 +95,63 @@ def get_english():
     return english
 
 
-def get_latest_statistics():
-    stat = []
-    cur = query("Select date_collected from statistics order by date_collected desc limit 1;")
+def get_dates():
+    dates = []
+    cur = query(f"Select distinct date_collected from statistics order by id desc")
     for row in cur.fetchall():
-        latest = row[0]
+        dates.append(str(row[0]))
+    return dates
+
+
+async def get_statistics_by_date(date_collected):
+    await asyncio.sleep(0)
+    stat = []
+    # cur = query("Select date_collected from statistics order by date_collected desc limit 1;")
+    # for row in cur.fetchall():
+    #     latest = row[0]
     cur = query("""SELECT sk.name, st.skill_percent, st.skill_count, st.date_collected  FROM statistics as st 
 JOIN skills as sk on st.skill_id = sk.id
-where date_collected = '{}' order by st.skill_count DESC;""".format(latest))
+where date_collected = '{}' order by st.skill_count DESC;""".format(date_collected))
     for row in cur.fetchall():
-        stat.append({'title': row[0], 'percent': row[1], 'count': row[2], 'date': row[3]})
+        stat.append({'title': row[0], 'percent': row[1], 'count': row[2], 'date': str(row[3])})
     return stat
 
 
-def get_latest_ways_statistics():
+async def get_ways_statistics_by_date(date_collected):
+    await asyncio.sleep(0)
     ways_stat = []
-    cur = query("Select date_collected from ways_statistics order by date_collected desc limit 1;")
-    for row in cur.fetchall():
-        latest = row[0]
+    # cur = query("Select date_collected from ways_statistics order by date_collected desc limit 1;")
+    # for row in cur.fetchall():
+    #     latest = row[0]
     cur = query("""SELECT w.name, ws.count  FROM ways_statistics as ws 
 JOIN ways as w on ws.ways_id = w.id
-where date_collected = '{}' order by ws.count DESC;""".format(latest))
+where date_collected = '{}' order by ws.count DESC;""".format(date_collected))
     for row in cur.fetchall():
         ways_stat.append({'title': row[0], 'count': row[1]})
     return ways_stat
 
 
-def get_latest_positions_statistics():
+async def get_positions_statistics_by_date(date_collected):
+    await asyncio.sleep(0)
     positions_stat = []
-    cur = query("Select date_collected from positions_statistics order by date_collected desc limit 1;")
-    for row in cur.fetchall():
-        latest = row[0]
+    # cur = query("Select date_collected from positions_statistics order by date_collected desc limit 1;")
+    # for row in cur.fetchall():
+    #     latest = row[0]
     cur = query("""SELECT w.name, ps.count  FROM positions_statistics as ps 
 JOIN positions as w on ps.position_id = w.id
-where date_collected = '{}' order by ps.count DESC;""".format(latest))
+where date_collected = '{}' order by ps.count DESC;""".format(date_collected))
     for row in cur.fetchall():
         positions_stat.append({'title': row[0], 'count': row[1]})
     return positions_stat
 
 
-def get_latest_vacancies_statistics():
+async def get_vacancies_statistics_by_date(date_collected):
+    await asyncio.sleep(0)
     vacancies_stat = []
-    cur = query("Select date_collected from vacancies order by date_collected desc limit 1;")
-    for row in cur.fetchall():
-        latest = row[0]
-    cur = query("SELECT *  FROM vacancies where date_collected = '{}';".format(latest))
+    # cur = query("Select date_collected from vacancies order by date_collected desc limit 1;")
+    # for row in cur.fetchall():
+    #     latest = row[0]
+    cur = query("SELECT *  FROM vacancies where date_collected = '{}';".format(date_collected))
     for row in cur.fetchall():
         vacancies_stat.append(
             {'vacancy_title': row[1], 'vacancy_link': row[4], 'company_title': row[2], 'company_link': row[6],
