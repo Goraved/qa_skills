@@ -47,7 +47,8 @@ async def get_skills():
     return skills
 
 
-def delete_stats_older_than_month():
+async def delete_stats_older_than_month():
+    await asyncio.sleep(0)
     query("DELETE FROM statistics WHERE date_collected < NOW() - interval 31 DAY")
 
 
@@ -64,7 +65,8 @@ def create_task(task_key):
     query(f"Insert into tasks (task_key, task_state, date_created) values ({task_key}, 'False', '{cur_date}');")
 
 
-def complete_task(task_key):
+async def complete_task(task_key):
+    await asyncio.sleep(0)
     cur_date = datetime.now()
     query(f"Update tasks set task_state='True', date_finished='{cur_date}' where task_key like '{task_key}';")
 

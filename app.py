@@ -21,13 +21,15 @@ class AsyncTask(threading.Thread):
         save_statistics(st.skill_percent, st.skills)
         save_ways(st.ways)
         save_vacancies(st.total_info)
-        delete_stats_older_than_month()
         st.positions = {}
         st.ways = {}
         st.skill_percent = {}
         st.skills = {}
         st.total_info = []
-        complete_task(self.task_id)
+        iloop = asyncio.new_event_loop()
+        asyncio.set_event_loop(iloop)
+        tasks = [complete_task(self.task_id), delete_stats_older_than_month()]
+        iloop.run_until_complete(asyncio.wait(tasks))
 
 
 @app.route("/")
