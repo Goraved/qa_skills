@@ -32,7 +32,7 @@ class GetStat:
         ioloop.close()
         # GO to each vacancy
         # pool = mp.Pool(mp.cpu_count())
-        pool = mp.Pool(4)
+        pool = mp.Pool(8)
         result = pool.starmap(self.vacancy_stats, [(link.attrib.get('href'), link.text, self.count_of_vac) for link in
                                                    vacancy_links])
         self.merge_lists(result)
@@ -74,10 +74,6 @@ class GetStat:
         st.position = find_in_text(st.positions, vacancy_title)
         st.total_info = {'vacancy_link': vacancy_link, 'vacancy_title': vacancy_title, 'company_link': company_link,
                          'company_title': company_title, 'city_title': city_title}
-        # for skill in st.skills:
-        #     percent = str(round(float(st.skills[skill] / count_of_vacancies) * 100, 2)) + '%'
-        #     if st.skills[skill] > 0:
-        #         st.skill_percent.update({skill: percent})
         return st
 
     def merge_lists(self, results):
