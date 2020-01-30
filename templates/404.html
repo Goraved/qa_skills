@@ -36,7 +36,9 @@
         {% for t in tech %}
         <h2>we are sorry, but statistics by requested date "{{t['date_collected']}}" was not found</h2>
         {% endfor %}
-        <h3><a href="/"> Main page</a> | <a href="/statistics"> Latest statistics</a> </h3>
+        <div class="notfound-404">
+            <h3><a href="/"> Main page</a> | <a href="/statistics"> Latest statistics</a></h3>
+        </div>
     </div>
 </div>
 
