@@ -74,9 +74,12 @@ def show_latest_statistics():
 @app.route("/statistic/<date>")
 def show_specific_statistics(date):
     dates = get_dates()
-    info = get_stats(date)
-    return render_template('statistics.html', links=info[0], stats=info[1], positions=info[2], ways=info[3],
-                           tech=info[4], dates=dates)
+    try:
+        info = get_stats(date)
+        return render_template('statistics.html', links=info[0], stats=info[1], positions=info[2], ways=info[3],
+                               tech=info[4], dates=dates)
+    except IndexError:
+        return render_template('error.html', tech=[{'date_collected': date}])
 
 
 def get_stats(date):
@@ -91,6 +94,16 @@ def get_stats(date):
     stats = a_results[3]
     tech = [{'vac_count': len(links), 'date_collected': stats[0]['date']}]
     return links, stats, positions, ways, tech
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('404.html', title='404'), 404
+
+
+@app.errorhandler(500)
+def server_error(error):
+    return render_template('500.html', title='500'), 500
 
 
 if __name__ == "__main__":
