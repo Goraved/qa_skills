@@ -4,38 +4,49 @@ import time
 from datetime import datetime
 
 import MySQLdb
-import gevent as gevent
+
+DB = None
+
+
+def db_connection():
+    global DB
+    DB = MySQLdb.connect(user=os.environ['db_user'], password=os.environ['db_password'],
+                         host=os.environ['db_host'], charset='utf8',
+                         database=os.environ['db_database'], connect_timeout=600)
+    try:
+        cursor = DB.cursor()
+        cursor.execute("""SET NAMES 'utf8';
+               SET CHARACTER SET 'utf8';
+               SET SESSION collation_connection = 'utf8_general_ci';""")
+    except:
+        pass
+
+
+def close_connection():
+    global DB
+    if DB:
+        DB.close()
 
 
 def query(sql, **kwargs):
-    for i in range(10):
-        try:
-            db = MySQLdb.connect(user=os.environ['db_user'], password=os.environ['db_password'],
-                                 host=os.environ['db_host'], charset='utf8',
-                                 database=os.environ['db_database'], connect_timeout=600)
-            try:
-                cursor = db.cursor()
-                cursor.execute("""SET NAMES 'utf8';
-            SET CHARACTER SET 'utf8';
-            SET SESSION collation_connection = 'utf8_general_ci';""")
-            except:
-                pass
-            try:
-                cursor = db.cursor()
-                if kwargs.get('many', False):
-                    cursor.executemany(sql, kwargs.get('list', []))
-                else:
-                    cursor.execute(sql)
-            except (AttributeError, MySQLdb.OperationalError):
-                db.ping(True)
-                cursor = db.cursor()
-                cursor.execute(sql)
-            db.commit()
-            db.close()
-            return cursor
-        except:
-            gevent.sleep(1)
-            continue
+    if not DB:
+        db_connection()
+
+    try:
+        cursor = DB.cursor()
+        if kwargs.get('many', False):
+            cursor.executemany(sql, kwargs.get('list', []))
+            DB.commit()
+        else:
+            cursor.execute(sql)
+            DB.commit()
+    except (AttributeError, MySQLdb.OperationalError):
+        db_connection()
+        # DB.ping(True)
+        cursor = DB.cursor()
+        cursor.execute(sql)
+        DB.commit()
+    return cursor
 
 
 async def get_skills():
