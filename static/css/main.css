@@ -1,5 +1,34 @@
+
 #scrollBtn {
 	display: none;
+	/* Hidden by default */
+	position: fixed;
+	/* Fixed/sticky position */
+	bottom: 90px;
+	/* Place the button at the bottom of the page */
+	right: 20px;
+	/* Place the button 30px from the right */
+	z-index: 99;
+	/* Make sure it does not overlap */
+	border: none;
+	/* Remove borders */
+	outline: none;
+	/* Remove outline */
+	background-color: red;
+	/* Set a background color */
+	color: white;
+	/* Text color */
+	cursor: pointer;
+	/* Add a mouse pointer on hover */
+	padding: 15px;
+	/* Some padding */
+	border-radius: 10px;
+	/* Rounded corners */
+	font-size: 20px;
+	/* Increase font size */
+}
+#moveTo {
+	display: block;
 	/* Hidden by default */
 	position: fixed;
 	/* Fixed/sticky position */
@@ -26,7 +55,6 @@
 	font-size: 20px;
 	/* Increase font size */
 }
-
 #scrollBtn:hover {
 	background-color: #555;
 	/* Add a dark-grey background on hover */
@@ -143,14 +171,14 @@ iframe {
   position: absolute;
   background-color: #ebebeb;
   border-radius: 5px;
-  width: 100%;
+  width: 90%;
   height: calc(100% - 30px);
   left: 0;
   top: 15px;
 }
 
 .table100 .ps__rail-y .ps__thumb-y {
-  width: 100%;
+  width: 90%;
   right: 0;
   background-color: transparent;
   opacity: 1 !important;
@@ -162,7 +190,7 @@ iframe {
   position: absolute;
   background-color: #cccccc;
   border-radius: 5px;
-  width: 100%;
+  width: 90%;
   height: calc(100% - 30px);
   left: 0;
   top: 15px;
@@ -173,12 +201,13 @@ iframe {
 [ Table ]*/
 
 .limiter {
-  width: 1366px;
+  padding-top: 5%;
+  width: 90%;
   margin: 0 auto;
 }
 
 .container-table100 {
-  width: 100%;
+  width: 90%;
   min-height: 100vh;
   background: #fff;
 
@@ -204,7 +233,7 @@ iframe {
 }
 
 table {
-  width: 100%;
+  width: 90%;
 }
 
 th, td {
@@ -623,4 +652,129 @@ th, td {
 }
 .tooltip:hover .tooltiptext {
   visibility: visible;
+}
+
+table {
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  table-layout: fixed;
+}
+
+table caption {
+  font-size: 1.5em;
+  margin: .5em 0 .75em;
+}
+
+table tr {
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  padding: .35em;
+}
+
+table th,
+table td {
+  padding: .625em;
+  text-align: center;
+}
+
+table th {
+  font-size: .85em;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+@media screen and (max-width: 600px) {
+  table {
+    border: 0;
+  }
+
+  table caption {
+    font-size: 1.3em;
+  }
+
+  table thead {
+    border: none;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  table tr {
+    border-bottom: 3px solid #ddd;
+    display: block;
+    margin-bottom: .625em;
+  }
+
+  table td {
+    border-bottom: 1px solid #ddd;
+    display: block;
+    font-size: .8em;
+    text-align: right;
+  }
+
+  table td::before {
+    /*
+    * aria-label has no advantage, it won't be read inside a table
+    content: attr(aria-label);
+    */
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  table td:last-child {
+    border-bottom: 0;
+  }
+}
+
+.cats1 {
+    width:5%;
+    margin-left:75%;
+    top: 55%;
+}
+.cats {
+    z-index: 4;
+}
+
+@media screen and (max-width: 1367px) {
+	.cats {
+        width:100%;
+    }
+    .cats1 {
+        width:30%;
+        margin-left: 65%;
+        padding-top: 0%;
+        top: 55%
+    }
+}
+
+@media screen and (max-width: 600px) {
+    h1{
+        font-size: 28px!important;
+    }
+    h2{
+        font-size: 20px!important;
+    }
+    h3{
+        font-size: 16px!important;
+    }
+	.cats {
+        width:100%;
+    }
+    .cats1 {
+        margin-left: 0%;
+        padding-top: 0%;
+        top: 30%
+    }
+    .limiter {
+  padding-top: 10%;
+}
 }

@@ -122,11 +122,11 @@ async def get_statistics_by_date(date_collected):
     # cur = query("Select date_collected from statistics order by date_collected desc limit 1;")
     # for row in cur.fetchall():
     #     latest = row[0]
-    cur = query("""SELECT sk.name, st.skill_percent, st.skill_count, st.date_collected  FROM statistics as st 
+    cur = query("""SELECT sk.name, st.skill_percent, st.skill_count, st.date_collected, sk.id  FROM statistics as st 
 JOIN skills as sk on st.skill_id = sk.id
 where date_collected = '{}' order by st.skill_count DESC;""".format(date_collected))
     for row in cur.fetchall():
-        stat.append({'title': row[0], 'percent': row[1], 'count': row[2], 'date': str(row[3])})
+        stat.append({'title': row[0], 'percent': row[1], 'count': row[2], 'date': str(row[3]), 'id': row[4]})
     return stat
 
 
@@ -248,3 +248,24 @@ def save_vacancies(values):
                      result['city_title'], date))
     insert_query = "Insert into vacancies (vacancy, url, company, company_url, city, date_collected) values (%s, %s, %s, %s, %s, %s);"
     cur = query(insert_query, list=list, many=True)
+
+
+async def get_statistics_by_skill(skill_id):
+    await asyncio.sleep(0)
+    stats = []
+    cur = query(
+        f"""select skill_id, skill_count, skill_percent, date_collected from statistics where skill_id = {skill_id} 
+        order by date_collected desc""")
+    for row in cur.fetchall():
+        stats.append(
+            {'skill_id': row[0], 'skill_count': row[1], 'skill_percent': row[2], 'date_collected': str(row[3])})
+    return stats
+
+
+async def get_skills_info():
+    await asyncio.sleep(0)
+    skills = []
+    cur = query(f'select id, name from skills')
+    for row in cur.fetchall():
+        skills.append({'id': row[0], 'name': row[1]})
+    return skills

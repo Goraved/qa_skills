@@ -71,6 +71,30 @@ def show_latest_statistics():
                            tech=info[4], dates=dates)
 
 
+@app.route("/skill")
+def show_stats_by_skill():
+    iloop = asyncio.new_event_loop()
+    asyncio.set_event_loop(iloop)
+    tasks = [get_statistics_by_skill(1), get_skills_info()]
+    result = iloop.run_until_complete(asyncio.gather(*tasks))
+    stats = result[0]
+    skills = result[1]
+    selected_skill = [_ for _ in skills if _['id'] == 1]
+    return render_template('skill.html', skills=skills, stats=stats, selected_skill=selected_skill)
+
+
+@app.route("/skill/<skill_id>")
+def show_stats_by_specific_skill(skill_id):
+    iloop = asyncio.new_event_loop()
+    asyncio.set_event_loop(iloop)
+    tasks = [get_statistics_by_skill(skill_id), get_skills_info()]
+    result = iloop.run_until_complete(asyncio.gather(*tasks))
+    stats = result[0]
+    skills = result[1]
+    selected_skill = [_ for _ in skills if str(_['id']) == skill_id]
+    return render_template('skill.html', skills=skills, stats=stats, selected_skill=selected_skill)
+
+
 @app.route("/statistic/<date>")
 def show_specific_statistics(date):
     dates = get_dates()
