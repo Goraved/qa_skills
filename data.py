@@ -300,16 +300,17 @@ def get_skill_stats(skill_id):
 
 
 def save_graph(stats, name):
-    count_skill = [_['skill_count'] for _ in stats][::-1]
-    date_collected = [_['date_collected'] for _ in stats][::-1]
     matplotlib.use('agg')
-    plt.title = 'Graph'
-    plt.plot(date_collected, count_skill, label=name)
-    plt.legend(loc="upper right")
-    plt.ylabel(f'Skill trend')
-    plt.xlabel(f'Date collected')
-    plt.xticks(rotation=90)
-    plt.savefig('static/images/graph.png')
+    if not plt.axes().legend_ or name not in [_._text for _ in plt.axes().legend_.texts]:
+        count_skill = [_['skill_count'] for _ in stats][::-1]
+        date_collected = [_['date_collected'] for _ in stats][::-1]
+        plt.plot(date_collected, count_skill, label=name)
+        plt.title = 'Graph'
+        plt.legend(loc="upper right")
+        plt.ylabel(f'Skill trend')
+        plt.xlabel(f'Date collected')
+        plt.xticks(rotation=90)
+        plt.savefig('static/images/graph.png')
 
 
 def clear_plt():
