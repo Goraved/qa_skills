@@ -744,6 +744,11 @@ table th {
     z-index: 4;
 }
 
+#graph {
+margin: 0 auto;
+width: 50%;
+}
+
 @media screen and (max-width: 1367px) {
 	.cats {
         width:100%;
@@ -757,6 +762,9 @@ table th {
 }
 
 @media screen and (max-width: 600px) {
+    #graph {
+    width: 100%;
+}
     h1{
         font-size: 28px!important;
     }
@@ -777,4 +785,15 @@ table th {
     .limiter {
   padding-top: 10%;
 }
+}
+
+.center {
+    width: 50%;
+    margin: 0 auto;
+    }
+
+
+.NO-CACHE {
+  max-width: 100%;
+  height: auto;
 }

@@ -19,8 +19,8 @@
 </head>
 <body>
 <div id="id01" class="w3-modal cats">
-    <div id="id02" class="w3-modal-content cats1">
-        <div class="w3-container">
+    <div id="id02" class="w3-modal-content w3-small cats1">
+        <div class="w3-container w3-padding w3-center">
             <span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-display-topright">&times;</span>
             <form class="move">
                     <h2>Sections</h2>
@@ -151,9 +151,8 @@
         </tbody>
     </table>
 </div>
-
 <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='vendor/jquery/jquery-3.3.1.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='vendor/jquery/jquery-3.2.1.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='vendor/bootstrap/js/popper.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='vendor/select2/select2.min.js') }}"></script>

@@ -1,4 +1,3 @@
-import random
 import string
 import threading
 
@@ -73,26 +72,21 @@ def show_latest_statistics():
 
 @app.route("/skill")
 def show_stats_by_skill():
-    iloop = asyncio.new_event_loop()
-    asyncio.set_event_loop(iloop)
-    tasks = [get_statistics_by_skill(1), get_skills_info()]
-    result = iloop.run_until_complete(asyncio.gather(*tasks))
-    stats = result[0]
-    skills = result[1]
-    selected_skill = [_ for _ in skills if _['id'] == 1]
-    return render_template('skill.html', skills=skills, stats=stats, selected_skill=selected_skill)
+    info = get_skill_stats('10')
+    return render_template('skill.html', skills=info[1], stats=info[0], selected_skill=info[2])
+
+
+@app.route("/clear_graph")
+def clear_graph():
+    os.remove('static/images/graph.png')
+    clear_plt()
+    return redirect(url_for('show_stats_by_skill'))
 
 
 @app.route("/skill/<skill_id>")
 def show_stats_by_specific_skill(skill_id):
-    iloop = asyncio.new_event_loop()
-    asyncio.set_event_loop(iloop)
-    tasks = [get_statistics_by_skill(skill_id), get_skills_info()]
-    result = iloop.run_until_complete(asyncio.gather(*tasks))
-    stats = result[0]
-    skills = result[1]
-    selected_skill = [_ for _ in skills if str(_['id']) == skill_id]
-    return render_template('skill.html', skills=skills, stats=stats, selected_skill=selected_skill)
+    info = get_skill_stats(skill_id)
+    return render_template('skill.html', skills=info[1], stats=info[0], selected_skill=info[2])
 
 
 @app.route("/statistic/<date>")
@@ -104,20 +98,6 @@ def show_specific_statistics(date):
                                tech=info[4], dates=dates)
     except IndexError:
         return render_template('error.html', tech=[{'date_collected': date}])
-
-
-def get_stats(date):
-    iloop = asyncio.new_event_loop()
-    asyncio.set_event_loop(iloop)
-    tasks = [get_vacancies_statistics_by_date(date), get_positions_statistics_by_date(date),
-             get_ways_statistics_by_date(date), get_statistics_by_date(date)]
-    a_results = iloop.run_until_complete(asyncio.gather(*tasks))
-    links = a_results[0]
-    positions = a_results[1]
-    ways = a_results[2]
-    stats = a_results[3]
-    tech = [{'vac_count': len(links), 'date_collected': stats[0]['date']}]
-    return links, stats, positions, ways, tech
 
 
 @app.errorhandler(404)

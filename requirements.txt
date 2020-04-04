@@ -17,3 +17,4 @@ itsdangerous
 lxml
 gevent
 mysqlclient
+matplotlib

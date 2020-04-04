@@ -4,6 +4,8 @@ import time
 from datetime import datetime
 
 import MySQLdb
+import matplotlib
+import matplotlib.pyplot as plt
 
 DB = None
 
@@ -265,7 +267,50 @@ async def get_statistics_by_skill(skill_id):
 async def get_skills_info():
     await asyncio.sleep(0)
     skills = []
-    cur = query(f'select id, name from skills')
+    cur = query(f'select id, name from skills order by name')
     for row in cur.fetchall():
         skills.append({'id': row[0], 'name': row[1]})
     return skills
+
+
+def get_stats(date):
+    iloop = asyncio.new_event_loop()
+    asyncio.set_event_loop(iloop)
+    tasks = [get_vacancies_statistics_by_date(date), get_positions_statistics_by_date(date),
+             get_ways_statistics_by_date(date), get_statistics_by_date(date)]
+    a_results = iloop.run_until_complete(asyncio.gather(*tasks))
+    links = a_results[0]
+    positions = a_results[1]
+    ways = a_results[2]
+    stats = a_results[3]
+    tech = [{'vac_count': len(links), 'date_collected': stats[0]['date']}]
+    return links, stats, positions, ways, tech
+
+
+def get_skill_stats(skill_id):
+    iloop = asyncio.new_event_loop()
+    asyncio.set_event_loop(iloop)
+    tasks = [get_statistics_by_skill(skill_id), get_skills_info()]
+    result = iloop.run_until_complete(asyncio.gather(*tasks))
+    stats = result[0]
+    skills = result[1]
+    selected_skill = [_ for _ in skills if str(_['id']) == skill_id]
+    save_graph(stats, selected_skill[0]["name"])
+    return stats, skills, selected_skill
+
+
+def save_graph(stats, name):
+    count_skill = [_['skill_count'] for _ in stats][::-1]
+    date_collected = [_['date_collected'] for _ in stats][::-1]
+    matplotlib.use('agg')
+    plt.title = 'Graph'
+    plt.plot(date_collected, count_skill, label=name)
+    plt.legend(loc="upper right")
+    plt.ylabel(f'Skill trend')
+    plt.xlabel(f'Date collected')
+    plt.xticks(rotation=90)
+    plt.savefig('static/images/graph.png')
+
+
+def clear_plt():
+    plt.close()
