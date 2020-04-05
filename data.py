@@ -307,7 +307,7 @@ def save_graph(stats, name):
         plt.plot(date_collected, count_skill, label=name)
         plt.title = 'Graph'
         plt.legend(loc="upper right")
-        plt.ylabel(f'Skill trend')
+        plt.ylabel(f'Skill matched in vacancies')
         plt.xlabel(f'Date collected')
         plt.xticks(rotation=90)
         plt.savefig('static/images/graph.png')
