@@ -2,7 +2,7 @@ import random
 import string
 import threading
 
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, request
 
 from parse import *
 
@@ -73,15 +73,26 @@ def show_latest_statistics():
 
 @app.route("/skill")
 def show_stats_by_skill():
+    clear_graph()
     info = get_skill_stats('10')
     return render_template('skill.html', skills=info[1], stats=info[0], selected_skill=info[2])
 
 
 @app.route("/clear_graph")
 def clear_graph():
-    os.remove('static/images/graph.png')
+    if os.path.exists('static/images/graph.png'):
+        os.remove('static/images/graph.png')
     clear_plt()
-    return redirect(url_for('show_stats_by_skill'))
+    link = redirect_url()
+    if link:
+        return redirect(link)
+    else:
+        return redirect(url_for('show_stats_by_skill'))
+
+
+def redirect_url(default='index'):
+    return request.args.get('next') or \
+           request.referrer
 
 
 @app.route("/skill/<skill_id>")
