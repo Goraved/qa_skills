@@ -1,5 +1,5 @@
 $(function () {
-		$('button').click(function () {
+		$('#analyze').click(function () {
 			$.ajax({
 				url: '/get_stat',
 				data: $('form').serialize(),

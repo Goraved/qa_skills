@@ -3,8 +3,8 @@
 <title>QA SKILLS</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 <link rel="shortcut icon" href="{{ url_for('static', filename='images/icons/favicon.ico') }}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -20,7 +20,6 @@ body, html {height: 100%}
     background-position: center;
     background-size: cover;
 }
-
 
 
 
@@ -40,18 +39,17 @@ body, html {height: 100%}
     <div class="w3-display-middle">
         <h1 class="w3-jumbo w3-animate-top">QA SKILLS ANALYZER</h1>
         <hr class="w3-border-grey" style="margin:auto;width:40%">
-        <p class="w3-large w3-right">
-            <button id="stats" onclick="location.href='/statistics';">Show statistics</button>
-        </p>
+        <p class="w3-center"><button id="stats"  class="button button5"  onclick="location.href='/statistics';">Show statistics by day</button></p>
+        <p class="w3-center"><button id="skill"  class="button button5"  onclick="location.href='/skill';">Show statistics by skill</button></p>
         <div id="wait" class="w3-display-middle"
-             style="display:none;height:0px;position:absolute;top:85%;left:50%;padding:25px;">
-            <p class="w3-large w3-center"><img
+             style="display:none;height:0px;position:absolute;top:100%;left:50%;padding:25px;width:100%">
+            <p class=" w3-center"><img
                     src='static/images/spinner.gif' width="120"
-                    height="120"/><br> Analyzing... <br> It could take for 1-2 minutes</p>
+                    height="100"/><br> Analyzing... <br> It could take for 1-2 minutes</p>
         </div>
         <form class="form-signin" role="form">
-            <p class="w3-large w3-left">
-                <button id="analyze" class="button button5" type="button">Analyze</button>
+            <p class="w3-center">
+                <button id="analyze" class="button button6" type="button">Analyze</button>
             </p>
         </form>
     </div>

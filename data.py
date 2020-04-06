@@ -42,7 +42,7 @@ def query(sql, **kwargs):
         else:
             cursor.execute(sql)
             DB.commit()
-    except (AttributeError, MySQLdb.OperationalError):
+    except:
         db_connection()
         # DB.ping(True)
         cursor = DB.cursor()
