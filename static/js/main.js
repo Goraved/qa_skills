@@ -17,26 +17,6 @@ for (var i = 0; i < nods.length; i++) {
 }
 
 
-
-
-var ind = 0;
-
-function poll(id) {
-    $.get('/TaskStatus/' + id, function(result) {
-        if (result != 'True' && ind < 70) {
-            ind++;
-            $("#wait").css("display", "block");
-            $("#analyze").prop("disabled", true);
-            setTimeout(poll.bind(null, id), 5000);
-        } else {
-            window.location.href = "/statistics"
-            $("#wait").css("display", "none");
-            $("#analyze").prop("disabled", false);
-        }
-    })
-}
-
-
 var myLink = document.getElementById('mylink');
 
 function hintAlert() {

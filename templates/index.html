@@ -9,7 +9,8 @@
 <link rel="shortcut icon" href="{{ url_for('static', filename='images/icons/favicon.ico') }}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<script src="static/js/main.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/polling.js') }}"></script>
 <style>
 body,h1 {font-family: "Raleway", sans-serif}
 body, html {height: 100%}
@@ -19,6 +20,8 @@ body, html {height: 100%}
     background-position: center;
     background-size: cover;
 }
+
+
 
 
 </style>
@@ -37,7 +40,9 @@ body, html {height: 100%}
     <div class="w3-display-middle">
         <h1 class="w3-jumbo w3-animate-top">QA SKILLS ANALYZER</h1>
         <hr class="w3-border-grey" style="margin:auto;width:40%">
-        <p class="w3-large w3-right w3-padding-small"><a id="stats" href="statistics">Show statistics</a></p>
+        <p class="w3-large w3-right">
+            <button id="stats" onclick="location.href='/statistics';">Show statistics</button>
+        </p>
         <div id="wait" class="w3-display-middle"
              style="display:none;height:0px;position:absolute;top:85%;left:50%;padding:25px;">
             <p class="w3-large w3-center"><img
