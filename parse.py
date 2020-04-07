@@ -36,9 +36,10 @@ class GetStat:
         result = pool.starmap(self.vacancy_stats, [(link.attrib.get('href'), link.text, self.count_of_vac) for link in
                                                    vacancy_links])
         self.merge_lists(result)
+        vac_skills = self.get_list_of_skills_in_vacancy(result)
         pool.close()
         del result
-        return self.st
+        return self.st, vac_skills
 
     def vacancy_stats(self, link, title, count_of_vacancies):
         st = copy.deepcopy(self.st)
@@ -88,3 +89,13 @@ class GetStat:
             if self.st.skills[skill] > 0:
                 self.st.skill_percent.update({skill: percent})
         self.st.total_info = [_.total_info for _ in results]
+
+    @staticmethod
+    def get_list_of_skills_in_vacancy(results):
+        vacancies_skills = []
+        for vacancy in results:
+            if not vacancy.total_info:
+                continue
+            skills = '|'.join([skill[0] for skill in vacancy.skills.items() if skill[1] > 0])
+            vacancies_skills.append({'link': vacancy.total_info['vacancy_link'], 'skills': skills})
+        return vacancies_skills

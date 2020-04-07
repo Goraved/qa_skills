@@ -15,6 +15,7 @@ def db_connection():
     DB = MySQLdb.connect(user=os.environ['db_user'], password=os.environ['db_password'],
                          host=os.environ['db_host'], charset='utf8',
                          database=os.environ['db_database'], connect_timeout=600)
+    DB.ping(True)
     try:
         cursor = DB.cursor()
         cursor.execute("""SET NAMES 'utf8';
@@ -44,7 +45,6 @@ def query(sql, **kwargs):
             DB.commit()
     except:
         db_connection()
-        # DB.ping(True)
         cursor = DB.cursor()
         cursor.execute(sql)
         DB.commit()
@@ -63,6 +63,21 @@ async def get_skills():
 async def delete_stats_older_than_month():
     await asyncio.sleep(0)
     query("DELETE FROM statistics WHERE date_collected < NOW() - interval 31 DAY")
+
+
+async def delete_vacancies_older_than_month():
+    await asyncio.sleep(0)
+    query("DELETE FROM vacancies WHERE date_collected < NOW() - interval 31 DAY")
+
+
+async def delete_ways_older_than_month():
+    await asyncio.sleep(0)
+    query("DELETE FROM ways_statistics WHERE date_collected < NOW() - interval 31 DAY")
+
+
+async def delete_positions_older_than_month():
+    await asyncio.sleep(0)
+    query("DELETE FROM positions_statistics WHERE date_collected < NOW() - interval 31 DAY")
 
 
 def get_task_state(task_key):
@@ -234,22 +249,24 @@ def save_ways(values):
     cur = query(insert_query, list=list, many=True)
 
 
-def save_vacancies(values):
+def save_vacancies(values, vac_skills):
     # Get vacancies list
     vacancies = {}
     # Get current date
     date = time.strftime('%Y-%m-%d')
     # Delete previous data by current date
     cur = query("Delete from vacancies where date_collected = '%s'" % date)
-    list = []
+    vac_list = []
     for result in values:
         # Save vacancies
         if not result:
             continue
-        list.append((result['vacancy_title'], result['vacancy_link'], result['company_title'], result['company_link'],
-                     result['city_title'], date))
-    insert_query = "Insert into vacancies (vacancy, url, company, company_url, city, date_collected) values (%s, %s, %s, %s, %s, %s);"
-    cur = query(insert_query, list=list, many=True)
+        skills = [_['skills'] for _ in vac_skills if _['link'] == result['vacancy_link']][0]
+        vac_list.append(
+            (result['vacancy_title'], result['vacancy_link'], result['company_title'], result['company_link'],
+             result['city_title'], date, skills))
+    insert_query = "Insert into vacancies (vacancy, url, company, company_url, city, date_collected, skills) values (%s, %s, %s, %s, %s, %s, %s);"
+    cur = query(insert_query, list=vac_list, many=True)
 
 
 async def get_statistics_by_skill(skill_id):
@@ -318,3 +335,22 @@ def save_graph(stats, name):
 
 def clear_plt():
     PLT.close()
+
+
+def get_vacancies_by_skill(date_collected, skill):
+    v = {'skill': skill}
+    vacancies = []
+    cur = query(
+        f"SELECT distinct vacancy, url, company, city FROM vacancies where date_collected = '{date_collected}' and skills like '%|{skill}|%'")
+    for row in cur.fetchall():
+        vacancies.append({'vacancy': row[0], 'url': row[1], 'company': row[2], 'city': row[3]})
+    v['vacancies'] = vacancies
+    return v
+
+
+def get_skill_list():
+    skills = []
+    cur = query('select id, name from skills order by name')
+    for row in cur.fetchall():
+        skills.append({'id': row[0], 'name': row[1]})
+    return skills
