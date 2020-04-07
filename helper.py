@@ -43,7 +43,8 @@ async def get_vacancies():
     count = 0
 
     max_count = 500
-    while len(vacancy_links) <= max_count:
+    urls = []
+    while len(vacancy_links) <= max_count and count < 600:
         data = [
             ('csrfmiddlewaretoken', 'c6V5lBXwbscVXZdwSq7KTVYGI58dU0N0s1GFi0uWrRkw00Q4MLIyMKdBjFf3ob7e'),
             ('count', count),
@@ -52,6 +53,11 @@ async def get_vacancies():
         response = requests.post('https://jobs.dou.ua/vacancies/xhr-load/', headers=headers, params=params,
                                  cookies=cookies, data=data)
         # Get vacancy links
-        vacancy_links += html.fromstring(response.text).xpath('//div/a')
+        links = html.fromstring(response.text).xpath('//div/a')
+
+        for link in links:
+            if link.attrib.get('href') not in urls:
+                vacancy_links.append(link)
+                urls.append(link.attrib.get('href'))
         count += 20
     return vacancy_links
