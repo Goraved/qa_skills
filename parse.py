@@ -31,16 +31,11 @@ class GetStat:
         self.count_of_vac = len(vacancy_links)
         ioloop.close()
         # GO to each vacancy
-        # pool = mp.Pool(mp.cpu_count())
-        # result = pool.starmap(self.vacancy_stats, [(link.attrib.get('href'), link.text, self.count_of_vac) for link in
-        #                                            vacancy_links])
-        result = []
-        for link in vacancy_links:
-            result.append(self.vacancy_stats(link.attrib.get('href'), link.text, self.count_of_vac))
+        pool = mp.Pool(mp.cpu_count())
+        result = pool.starmap(self.vacancy_stats, [(link.attrib.get('href'), link.text, self.count_of_vac) for link in
+                                                   vacancy_links])
         self.merge_lists(result)
         vac_skills = self.get_list_of_skills_in_vacancy(result)
-        # alg = [_ for _ in result if _.skills['Automation'] > 0]
-        # db = [_ for _ in vac_skills if 'Automation' in _['skills']]
 
         # pool.close()
         del result
