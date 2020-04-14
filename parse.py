@@ -1,8 +1,8 @@
 import copy
 import multiprocessing as mp
-
 from data import *
 from helper import *
+from lxml import etree
 
 
 class Stat:
@@ -32,39 +32,50 @@ class GetStat:
         ioloop.close()
         # GO to each vacancy
         # pool = mp.Pool(mp.cpu_count())
-        pool = mp.Pool(8)
-        result = pool.starmap(self.vacancy_stats, [(link.attrib.get('href'), link.text, self.count_of_vac) for link in
-                                                   vacancy_links])
+        # result = pool.starmap(self.vacancy_stats, [(link.attrib.get('href'), link.text, self.count_of_vac) for link in
+        #                                            vacancy_links])
+        result = []
+        for link in vacancy_links:
+            result.append(self.vacancy_stats(link.attrib.get('href'), link.text, self.count_of_vac))
         self.merge_lists(result)
         vac_skills = self.get_list_of_skills_in_vacancy(result)
-        pool.close()
+        # alg = [_ for _ in result if _.skills['Automation'] > 0]
+        # db = [_ for _ in vac_skills if 'Automation' in _['skills']]
+
+        # pool.close()
         del result
         return self.st, vac_skills
 
     def vacancy_stats(self, link, title, count_of_vacancies):
         st = copy.deepcopy(self.st)
         vacancy = requests.get(link.replace('\\', '').replace('"', ""), headers=headers)
+        # html_text = html.fromstring(vacancy.text)
+        html_text = html.fromstring(vacancy.content)
         # Get vacancy link and title
         if not title:
             title = '-- Couldn\'t parse title :('
+        title = title.encode('ascii').decode('unicode_escape')
         vacancy_title = title.replace('\\u00a0', ' ')
-        vacancy_link = link.replace('\\', '').replace('"', "")
+        vacancy_link = link.replace('\\', '').replace('"', "").replace('?from=list_hot','')
         # Get company link and title
-        company = html.fromstring(vacancy.text).xpath("//div[@class='info']/div/a[1]")
+        company = html_text.xpath("//div[@class='info']//a[1]")
         if not company:
-            return st
-        if not company[0].text:
-            company[0].text = '-- Couldn\'t parse company :('
-        company_title = company[0].text.replace('\\u00a0', ' ')
-        company_link = company[0].get('href').replace('\\', '').replace('"', "")
+            company_title = re.findall('companies/(.+)/vac', vacancy_link)[0].capitalize()
+            company_link = f'https://jobs.dou.ua/companies/{company_title}/vacancies'
+            company_title = company_title.encode('ascii').decode('unicode_escape')
+        else:
+            if not company[0].text:
+                company[0].text = '-- Couldn\'t parse company :('
+            company_title = company[0].text.replace('\\u00a0', ' ')
+            company_link = company[0].get('href').replace('\\', '').replace('"', "")
         try:
-            city = html.fromstring(vacancy.text).xpath("//div[@class='sh-info']/span")
+            city = html_text.xpath("//div[@class='sh-info']/span")
             city_title = city[0].text
         except:
             city_title = '-- Couldn\'t parse city :('
 
         # Get all html paragraphs
-        description = html.fromstring(vacancy.text).xpath("//div[@class='l-vacancy']//p")
+        description = html_text.xpath("//div[@class='l-vacancy']//p")
         vacancy_desciption = ''
         # Parse text from all paragraph into one
         for paragraph in description:

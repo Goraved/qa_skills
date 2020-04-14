@@ -261,7 +261,7 @@ def save_vacancies(values, vac_skills):
         # Save vacancies
         if not result:
             continue
-        skills = [_['skills'] for _ in vac_skills if _['link'] == result['vacancy_link']][0]
+        skills = [_['skills'] for _ in vac_skills if _['link'] in result['vacancy_link']][0]
         vac_list.append(
             (result['vacancy_title'], result['vacancy_link'], result['company_title'], result['company_link'],
              result['city_title'], date, skills))
@@ -341,7 +341,8 @@ def get_vacancies_by_skill(date_collected, skill):
     v = {'skill': skill}
     vacancies = []
     cur = query(
-        f"SELECT distinct vacancy, url, company, city FROM vacancies where date_collected = '{date_collected}' and skills like '%|{skill}|%'")
+        f"SELECT distinct vacancy, url, company, city FROM vacancies where date_collected = '{date_collected}' "
+        f"and (skills like '%|{skill}|%' OR skills like '{skill}|%' OR skills like '%|{skill}' OR skills like '{skill}')")
     for row in cur.fetchall():
         vacancies.append({'vacancy': row[0], 'url': row[1], 'company': row[2], 'city': row[3]})
     v['vacancies'] = vacancies
