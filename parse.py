@@ -1,8 +1,8 @@
 import copy
 import multiprocessing as mp
+
 from data import *
 from helper import *
-from lxml import etree
 
 
 class Stat:
@@ -51,7 +51,7 @@ class GetStat:
             title = '-- Couldn\'t parse title :('
         title = title.encode('ascii').decode('unicode_escape')
         vacancy_title = title.replace('\\u00a0', ' ')
-        vacancy_link = link.replace('\\', '').replace('"', "").replace('?from=list_hot','')
+        vacancy_link = link.replace('\\', '').replace('"', "").replace('?from=list_hot', '')
         # Get company link and title
         company = html_text.xpath("//div[@class='info']//a[1]")
         if not company:

@@ -18,3 +18,4 @@ lxml
 gevent
 mysqlclient
 matplotlib
+pillow

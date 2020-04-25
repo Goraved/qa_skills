@@ -291,6 +291,8 @@ async def get_skills_info():
 
 
 def get_stats(date):
+    if not os.path.isfile('./static/images/languages.png'):
+        get_languages_comparison()
     iloop = asyncio.new_event_loop()
     asyncio.set_event_loop(iloop)
     tasks = [get_vacancies_statistics_by_date(date), get_positions_statistics_by_date(date),
@@ -319,18 +321,36 @@ def get_skill_stats(skill_id):
 PLT = plt
 
 
-def save_graph(stats, name):
+def save_graph(stats, name, title='graph'):
     matplotlib.use('agg')
     if not PLT.axes().legend_ or name not in [_._text for _ in PLT.axes().legend_.texts]:
         count_skill = [_['skill_count'] for _ in stats][::-1]
         date_collected = [_['date_collected'] for _ in stats][::-1]
         PLT.plot(date_collected, count_skill, label=name)
-        PLT.title = 'Graph'
+        PLT.title = title
         PLT.legend(loc="upper right")
         PLT.ylabel(f'Skill matched in vacancies')
         PLT.xlabel(f'Date collected')
         PLT.xticks(rotation=90)
-        PLT.savefig('static/images/graph.png')
+        PLT.savefig(f'static/images/{title}.png')
+
+
+def get_languages_comparison():
+    for skill_id in (6, 7, 9, 10, 11, 19, 46, 94):
+        iloop_lang = asyncio.new_event_loop()
+        asyncio.set_event_loop(iloop_lang)
+        tasks = [get_statistics_by_skill(skill_id), get_skills_info()]
+        result = iloop_lang.run_until_complete(asyncio.gather(*tasks))
+        stats = result[0]
+        skills = result[1]
+        selected_skill = [_ for _ in skills if _['id'] == skill_id]
+        save_graph(stats, selected_skill[0]["name"], 'languages')
+        iloop_lang.close()
+    clear_plt()
+    from PIL import Image
+    img = Image.open('static/images/languages.png')
+    w, h = img.size
+    img.crop((0, 50, w, h)).save('static/images/languages.png')
 
 
 def clear_plt():

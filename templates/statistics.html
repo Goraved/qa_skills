@@ -45,7 +45,8 @@
     </div>
 </div>
 <div class="limiter">
-    <h1>Actual QA skills based on vacancies from <a href="https://jobs.dou.ua/vacancies/?category=QA" target="_blank">DOU.UA</a></h1>
+    <h1>Actual QA skills based on vacancies from <a href="https://jobs.dou.ua/vacancies/?category=QA" target="_blank">DOU.UA</a>
+    </h1>
     {% for t in tech %}
     <h2>(Total vacancies : {{t['vac_count']}})</h2>
     <h3>Collected at <select onchange="window.document.location.href=this.options[this.selectedIndex].value;">
@@ -59,6 +60,20 @@
     </select>
     </h3>
     {% endfor %}
+</div>
+<div id="graph">
+    <hr>
+    <div class="w3-center">
+        <h3>Languages comparison</h3>
+        <a class="lightbox" href="#graph_img">
+            <img class="NO-CACHE" src="{{ url_for('static', filename='images/languages.png') }}">
+        </a>
+        <div class="lightbox-target" id="graph_img">
+            <img class="NO-CACHE" src="{{ url_for('static', filename='images/languages.png') }}">
+            <a class="lightbox-close" href="#"></a>
+        </div>
+
+    </div>
 </div>
 <hr>
 <h3 id="skills">SKILLS</h3>
