@@ -76,7 +76,7 @@ class GetStat:
         for paragraph in description:
             vacancy_desciption += "".join([x for x in paragraph.itertext()])
         # Search each skill in vacancy
-        st.skills = find_in_text(st.skills, vacancy_desciption)
+        st.skills = find_in_text(st.skills, vacancy_desciption, vacancy_title)
         st.ways = find_in_text(st.ways, vacancy_title)
         st.position = find_in_text(st.positions, vacancy_title)
         st.total_info = {'vacancy_link': vacancy_link, 'vacancy_title': vacancy_title, 'company_link': company_link,

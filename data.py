@@ -8,6 +8,16 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 DB = None
+cached_data = None
+
+
+def get_cached_data():
+    return cached_data
+
+
+def set_cached_data(input_data):
+    global cached_data
+    cached_data = input_data
 
 
 def db_connection():
@@ -336,7 +346,7 @@ def save_graph(stats, name, title='graph'):
 
 
 def get_languages_comparison():
-    for skill_id in (6, 7, 9, 10, 11, 19, 46, 94):
+    for skill_id in (6, 7, 9, 10, 11, 19, 46, 117, 118, 155):
         iloop_lang = asyncio.new_event_loop()
         asyncio.set_event_loop(iloop_lang)
         tasks = [get_statistics_by_skill(skill_id), get_skills_info()]

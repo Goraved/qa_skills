@@ -1,8 +1,11 @@
 import asyncio
+import os
 import re
 
 import requests
 from lxml import html
+
+from data import set_cached_data, clear_plt
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36 OPR/50.0.2762.67',
@@ -11,9 +14,14 @@ headers = {
 }
 
 
-def find_in_text(list_item, text):
+def find_in_text(list_item, text, vacancy_title=''):
     for item in list_item:
+        if item in ['C#', '.Net'] and (item in text or item in vacancy_title):
+            list_item[item] += 1
+            continue
         if re.search(r"\b" + re.escape(item) + r"\b", text, re.IGNORECASE) is not None:
+            list_item[item] += 1
+        elif re.search(r"\b" + re.escape(item) + r"\b", vacancy_title, re.IGNORECASE) is not None:
             list_item[item] += 1
     return list_item
 
@@ -61,3 +69,12 @@ async def get_vacancies():
                 urls.append(link.attrib.get('href'))
         count += 20
     return vacancy_links
+
+
+def clear_cached_data():
+    set_cached_data(None)
+    if os.path.exists('static/images/graph.png'):
+        os.remove('static/images/graph.png')
+    clear_plt()
+    if os.path.exists('static/images/languages.png'):
+        os.remove('static/images/languages.png')

@@ -2,7 +2,7 @@ import random
 import string
 import threading
 
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, jsonify
 
 from parse import *
 
@@ -21,6 +21,7 @@ class AsyncTask(threading.Thread):
         save_statistics(st.skill_percent, st.skills)
         save_ways(st.ways)
         save_vacancies(st.total_info, vac_skills)
+        clear_cached_data()
         st.positions = {}
         st.ways = {}
         st.skill_percent = {}
@@ -69,8 +70,28 @@ def save_data():
 def show_latest_statistics():
     dates = get_dates()
     info = get_stats(dates[0])
+    set_cached_data(dict(stats=info[1], positions=info[2], ways=info[3]))
     return render_template('statistics.html', links=info[0], stats=info[1], positions=info[2], ways=info[3],
                            tech=info[4], dates=dates)
+
+
+@app.route("/get_statistics", methods=['GET'])
+def get_latest_statistics_endpoint():
+    if get_cached_data():
+        return jsonify(get_cached_data())
+    else:
+        dates = get_dates()
+        info = get_stats(dates[0])
+        cached_data = dict(stats=info[1], positions=info[2], ways=info[3])
+        set_cached_data(cached_data)
+        return jsonify(cached_data)
+
+
+@app.route("/get_language_comparison", methods=['GET'])
+def get_language_comparison_endpoint():
+    if not os.path.isfile('./static/images/languages.png'):
+        get_languages_comparison()
+    return jsonify({'image': os.path.abspath('./static/images/languages.png')})
 
 
 @app.route("/statistic/<date>")
