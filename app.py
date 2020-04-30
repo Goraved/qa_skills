@@ -91,7 +91,8 @@ def get_latest_statistics_endpoint():
 def get_language_comparison_endpoint():
     if not os.path.isfile('./static/images/languages.png'):
         get_languages_comparison()
-    return jsonify({'image': os.path.abspath('./static/images/languages.png')})
+    rand = str(datetime.now()).replace(' ', '_')
+    return jsonify({'image': os.path.abspath(f'./static/images/languages.png?v={rand}')})
 
 
 @app.route("/statistic/<date>")
