@@ -90,11 +90,16 @@ class GetStat:
         self.st.positions = {k: sum(d[k] for d in positions) for k in positions[0]}
         self.st.skills = {k: sum(d[k] for d in skills) for k in skills[0]}
         self.st.ways = {k: sum(d[k] for d in ways) for k in ways[0]}
+        self.merge_js()
         for skill in self.st.skills:
             percent = str(round(float(self.st.skills[skill] / self.count_of_vac) * 100, 2)) + '%'
             if self.st.skills[skill] > 0:
                 self.st.skill_percent.update({skill: percent})
         self.st.total_info = [_.total_info for _ in results]
+
+    def merge_js(self):
+        self.st.skills['javascript'] += self.st.skills['JS']
+        del self.st.skills['JS']
 
     @staticmethod
     def get_list_of_skills_in_vacancy(results):

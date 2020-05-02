@@ -338,7 +338,7 @@ def save_graph(stats, name, title='graph'):
         date_collected = [_['date_collected'] for _ in stats][::-1]
         PLT.plot(date_collected, count_skill, label=name)
         PLT.title = title
-        PLT.legend(loc="upper right")
+        PLT.legend(loc="upper left")
         PLT.ylabel(f'Skill matched in vacancies')
         PLT.xlabel(f'Date collected')
         PLT.xticks(rotation=90)
@@ -346,7 +346,7 @@ def save_graph(stats, name, title='graph'):
 
 
 def get_languages_comparison():
-    for skill_id in (6, 7, 9, 10, 11, 19, 46, 117, 118, 155):
+    for skill_id in (6, 7, 10, 11, 46):
         iloop_lang = asyncio.new_event_loop()
         asyncio.set_event_loop(iloop_lang)
         tasks = [get_statistics_by_skill(skill_id), get_skills_info()]
@@ -370,11 +370,19 @@ def clear_plt():
 def get_vacancies_by_skill(date_collected, skill):
     v = {'skill': skill}
     vacancies = []
-    cur = query(
-        f"SELECT distinct vacancy, url, company, city FROM vacancies where date_collected = '{date_collected}' "
-        f"and (skills like '%|{skill}|%' OR skills like '{skill}|%' OR skills like '%|{skill}' OR skills like '{skill}')")
-    for row in cur.fetchall():
-        vacancies.append({'vacancy': row[0], 'url': row[1], 'company': row[2], 'city': row[3]})
+    if skill in ('JS', 'javascript'):
+        for sk in ('JS', 'javascript'):
+            cur = query(
+                f"SELECT distinct vacancy, url, company, city FROM vacancies where date_collected = '{date_collected}' "
+                f"and (skills like '%|{sk}|%' OR skills like '{sk}|%' OR skills like '%|{sk}' OR skills like '{sk}')")
+            for row in cur.fetchall():
+                vacancies.append({'vacancy': row[0], 'url': row[1], 'company': row[2], 'city': row[3]})
+    else:
+        cur = query(
+            f"SELECT distinct vacancy, url, company, city FROM vacancies where date_collected = '{date_collected}' "
+            f"and (skills like '%|{skill}|%' OR skills like '{skill}|%' OR skills like '%|{skill}' OR skills like '{skill}')")
+        for row in cur.fetchall():
+            vacancies.append({'vacancy': row[0], 'url': row[1], 'company': row[2], 'city': row[3]})
     v['vacancies'] = vacancies
     return v
 
