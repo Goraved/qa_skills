@@ -7,3 +7,6 @@ Pet project to gather all vacancies from Dou.ua, analyze them and make statistic
 * Parse info;
 * Find predefined keyword skills in the parsed vacancies;
 * Display analytics by (skill, position, way)
+
+## Link
+https://qa-skills.herokuapp.com/
