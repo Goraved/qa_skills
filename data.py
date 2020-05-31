@@ -24,7 +24,7 @@ def db_connection():
     global DB
     DB = MySQLdb.connect(user=os.environ['db_user'], password=os.environ['db_password'],
                          host=os.environ['db_host'], charset='utf8',
-                         database=os.environ['db_database'], connect_timeout=600)
+                         database=os.environ['db_database'], connect_timeout=6000)
     DB.ping(True)
     try:
         cursor = DB.cursor()
@@ -49,14 +49,16 @@ def query(sql, **kwargs):
         cursor = DB.cursor()
         if kwargs.get('many', False):
             cursor.executemany(sql, kwargs.get('list', []))
-            DB.commit()
         else:
             cursor.execute(sql)
-            DB.commit()
+        DB.commit()
     except:
         db_connection()
         cursor = DB.cursor()
-        cursor.execute(sql)
+        if kwargs.get('many', False):
+            cursor.executemany(sql, kwargs.get('list', []))
+        else:
+            cursor.execute(sql)
         DB.commit()
     return cursor
 
@@ -146,12 +148,9 @@ def get_dates():
 async def get_statistics_by_date(date_collected):
     await asyncio.sleep(0)
     stat = []
-    # cur = query("Select date_collected from statistics order by date_collected desc limit 1;")
-    # for row in cur.fetchall():
-    #     latest = row[0]
-    cur = query("""SELECT sk.name, st.skill_percent, st.skill_count, st.date_collected, sk.id  FROM statistics as st 
-JOIN skills as sk on st.skill_id = sk.id
-where date_collected = '{}' order by st.skill_count DESC;""".format(date_collected))
+    cur = query(f"""SELECT sk.name, st.skill_percent, st.skill_count, st.date_collected, sk.id  FROM statistics as st 
+    JOIN skills as sk on st.skill_id = sk.id
+    where date_collected = '{date_collected}' order by st.skill_count DESC;""")
     for row in cur.fetchall():
         stat.append({'title': row[0], 'percent': row[1], 'count': row[2], 'date': str(row[3]), 'id': row[4]})
     return stat
@@ -160,12 +159,9 @@ where date_collected = '{}' order by st.skill_count DESC;""".format(date_collect
 async def get_ways_statistics_by_date(date_collected):
     await asyncio.sleep(0)
     ways_stat = []
-    # cur = query("Select date_collected from ways_statistics order by date_collected desc limit 1;")
-    # for row in cur.fetchall():
-    #     latest = row[0]
-    cur = query("""SELECT w.name, ws.count  FROM ways_statistics as ws 
-JOIN ways as w on ws.ways_id = w.id
-where date_collected = '{}' order by ws.count DESC;""".format(date_collected))
+    cur = query(f"""SELECT w.name, ws.count  FROM ways_statistics as ws 
+    JOIN ways as w on ws.ways_id = w.id
+    where date_collected = '{date_collected}' order by ws.count DESC;""")
     for row in cur.fetchall():
         ways_stat.append({'title': row[0], 'count': row[1]})
     return ways_stat
@@ -174,12 +170,9 @@ where date_collected = '{}' order by ws.count DESC;""".format(date_collected))
 async def get_positions_statistics_by_date(date_collected):
     await asyncio.sleep(0)
     positions_stat = []
-    # cur = query("Select date_collected from positions_statistics order by date_collected desc limit 1;")
-    # for row in cur.fetchall():
-    #     latest = row[0]
-    cur = query("""SELECT w.name, ps.count  FROM positions_statistics as ps 
-JOIN positions as w on ps.position_id = w.id
-where date_collected = '{}' order by ps.count DESC;""".format(date_collected))
+    cur = query(f"""SELECT w.name, ps.count  FROM positions_statistics as ps 
+    JOIN positions as w on ps.position_id = w.id
+    where date_collected = '{date_collected}' order by ps.count DESC;""")
     for row in cur.fetchall():
         positions_stat.append({'title': row[0], 'count': row[1]})
     return positions_stat
@@ -188,10 +181,7 @@ where date_collected = '{}' order by ps.count DESC;""".format(date_collected))
 async def get_vacancies_statistics_by_date(date_collected):
     await asyncio.sleep(0)
     vacancies_stat = []
-    # cur = query("Select date_collected from vacancies order by date_collected desc limit 1;")
-    # for row in cur.fetchall():
-    #     latest = row[0]
-    cur = query("SELECT *  FROM vacancies where date_collected = '{}';".format(date_collected))
+    cur = query(f"SELECT *  FROM vacancies where date_collected = '{date_collected}';")
     for row in cur.fetchall():
         vacancies_stat.append(
             {'vacancy_title': row[1], 'vacancy_link': row[4], 'company_title': row[2], 'company_link': row[6],
@@ -208,7 +198,7 @@ def save_statistics(percent, count):
     # Get current date
     date = time.strftime('%Y-%m-%d')
     # Delete previous data by current date
-    cur = query("Delete from statistics where date_collected = '%s'" % date)
+    cur = query(f"Delete from statistics where date_collected = '{date}'")
     list = []
     for result in percent:
         # Get skill id
@@ -228,7 +218,7 @@ def save_positions(values):
     # Get current date
     date = time.strftime('%Y-%m-%d')
     # Delete previous data by current date
-    cur = query("Delete from positions_statistics where date_collected = '%s'" % date)
+    cur = query(f"Delete from positions_statistics where date_collected = '{date}'")
     list = []
     for result in values:
         # Get position id
@@ -248,7 +238,7 @@ def save_ways(values):
     # Get current date
     date = time.strftime('%Y-%m-%d')
     # Delete previous data by current date
-    cur = query("Delete from ways_statistics where date_collected = '%s'" % date)
+    cur = query(f"Delete from ways_statistics where date_collected = '{date}'")
     list = []
     for result in values:
         # Get way id
@@ -260,12 +250,10 @@ def save_ways(values):
 
 
 def save_vacancies(values, vac_skills):
-    # Get vacancies list
-    vacancies = {}
     # Get current date
     date = time.strftime('%Y-%m-%d')
     # Delete previous data by current date
-    cur = query("Delete from vacancies where date_collected = '%s'" % date)
+    cur = query(f"Delete from vacancies where date_collected = '{date}'")
     vac_list = []
     for result in values:
         # Save vacancies
@@ -333,7 +321,7 @@ PLT = plt
 
 def save_graph(stats, name, title='graph'):
     matplotlib.use('agg')
-    if not PLT.axes().legend_ or name not in [_._text for _ in PLT.axes().legend_.texts]:
+    if not PLT.axes().legend_ or name not in [element._text for element in PLT.axes().legend_.texts]:
         count_skill = [_['skill_count'] for _ in stats][::-1]
         date_collected = [_['date_collected'] for _ in stats][::-1]
         PLT.plot(date_collected, count_skill, label=name)
@@ -374,13 +362,15 @@ def get_vacancies_by_skill(date_collected, skill):
         for sk in ('JS', 'javascript'):
             cur = query(
                 f"SELECT distinct vacancy, url, company, city FROM vacancies where date_collected = '{date_collected}' "
-                f"and (skills like '%|{sk}|%' OR skills like '{sk}|%' OR skills like '%|{sk}' OR skills like '{sk}')")
+                f"and (skills like '%|{sk}|%' OR skills like '{sk}|%' "
+                f"OR skills like '%|{sk}' OR skills like '{sk}')")
             for row in cur.fetchall():
                 vacancies.append({'vacancy': row[0], 'url': row[1], 'company': row[2], 'city': row[3]})
     else:
         cur = query(
             f"SELECT distinct vacancy, url, company, city FROM vacancies where date_collected = '{date_collected}' "
-            f"and (skills like '%|{skill}|%' OR skills like '{skill}|%' OR skills like '%|{skill}' OR skills like '{skill}')")
+            f"and (skills like '%|{skill}|%' OR skills like '{skill}|%' "
+            f"OR skills like '%|{skill}' OR skills like '{skill}')")
         for row in cur.fetchall():
             vacancies.append({'vacancy': row[0], 'url': row[1], 'company': row[2], 'city': row[3]})
     v['vacancies'] = vacancies

@@ -32,7 +32,7 @@ class GetStat:
         ioloop.close()
         # GO to each vacancy
         pool = mp.Pool(mp.cpu_count())
-        result = pool.starmap(self.vacancy_stats, [(link.attrib.get('href'), link.text, self.count_of_vac) for link in
+        result = pool.starmap(self.vacancy_stats, [(link.attrib.get('href'), link.text) for link in
                                                    vacancy_links])
         self.merge_lists(result)
         vac_skills = self.get_list_of_skills_in_vacancy(result)
@@ -41,7 +41,7 @@ class GetStat:
         del result
         return self.st, vac_skills
 
-    def vacancy_stats(self, link, title, count_of_vacancies):
+    def vacancy_stats(self, link, title):
         st = copy.deepcopy(self.st)
         vacancy = requests.get(link.replace('\\', '').replace('"', ""), headers=headers)
         # html_text = html.fromstring(vacancy.text)
@@ -71,12 +71,12 @@ class GetStat:
 
         # Get all html paragraphs
         description = html_text.xpath("//div[@class='l-vacancy']//p")
-        vacancy_desciption = ''
+        vacancy_description = ''
         # Parse text from all paragraph into one
         for paragraph in description:
-            vacancy_desciption += "".join([x for x in paragraph.itertext()])
+            vacancy_description += "".join([x for x in paragraph.itertext()])
         # Search each skill in vacancy
-        st.skills = find_in_text(st.skills, vacancy_desciption, vacancy_title)
+        st.skills = find_in_text(st.skills, vacancy_description, vacancy_title)
         st.ways = find_in_text(st.ways, vacancy_title)
         st.position = find_in_text(st.positions, vacancy_title)
         st.total_info = {'vacancy_link': vacancy_link, 'vacancy_title': vacancy_title, 'company_link': company_link,
