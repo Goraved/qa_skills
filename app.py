@@ -94,7 +94,9 @@ def get_latest_statistics_endpoint():
     else:
         dates = Statistic.get_dates()
         info = get_stats(dates[0])
-        cached_data = dict(stats=info[1], positions=info[2], ways=info[3])
+        # Class objects to dict
+        cached_data = dict(stats=[vars(_) for _ in info[1]], positions=[vars(_) for _ in info[2]],
+                           ways=[vars(_) for _ in info[3]])
         set_cached_data(cached_data)
         return jsonify(cached_data)
 
@@ -109,7 +111,7 @@ def get_language_comparison_endpoint():
 
 @app.route("/statistic/<date>")
 def show_specific_statistics(date):
-    dates = Statistic.get_dates()
+    dates = Statistic.get_str_dates()
     try:
         info = get_stats(date)
         return render_template('statistics.html', links=info[0], stats=info[1], positions=info[2], ways=info[3],
@@ -122,7 +124,7 @@ def show_specific_statistics(date):
 @app.route("/skill")
 def show_stats_by_skill():
     clear_graph()
-    info = get_skill_stats('10')
+    info = get_skill_stats(10)
     return render_template('skill.html', skills=info[1], stats=info[0], selected_skill=info[2])
 
 
@@ -159,7 +161,7 @@ def get_vac():
 
 @app.route("/skill_vacancies/<skill_id>_<date>")
 def show_vacancies_by_specific_skill(skill_id, date):
-    dates = Statistic.get_dates()
+    dates = Statistic.get_str_dates()
     skills = get_skill_list()
     selected = [_ for _ in skills if _['id'] == int(skill_id)][0]
     vacancies = get_vacancies_by_skill(date, selected['name'])['vacancies']
@@ -169,7 +171,7 @@ def show_vacancies_by_specific_skill(skill_id, date):
 
 @app.route("/skill_vacancies")
 def show_vacancies_by_skill():
-    dates = Statistic.get_dates()
+    dates = Statistic.get_str_dates()
     skills = get_skill_list()
     selected = [_['id'] for _ in skills if _['id'] == 10][0]
     vacancies = get_vacancies_by_skill(dates[0], selected['name'])['vacancies']
