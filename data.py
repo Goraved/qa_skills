@@ -3,6 +3,7 @@ import os
 import MySQLdb
 from MySQLdb.cursors import Cursor
 
+
 DB = None
 cached_data = None
 
