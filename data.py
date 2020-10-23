@@ -3,8 +3,9 @@ import os
 import MySQLdb
 from MySQLdb.cursors import Cursor
 
-DB: MySQLdb.connection = None
-cached_data: dict = None
+
+DB = None
+cached_data = None
 
 
 def get_cached_data() -> dict:
