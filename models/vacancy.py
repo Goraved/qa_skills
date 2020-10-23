@@ -16,7 +16,7 @@ class Vacancy:
         query("DELETE FROM vacancies WHERE date_collected < NOW() - interval 31 DAY")
 
     @staticmethod
-    def save_vacancies(values: dict, vac_skills: dict):
+    def save_vacancies(values: list, vac_skills: dict):
         # Get current date
         date_collected = time.strftime('%Y-%m-%d')
         # Delete previous data by current date

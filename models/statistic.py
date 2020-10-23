@@ -21,11 +21,19 @@ class Statistic:
         query("DELETE FROM statistics WHERE date_collected < NOW() - interval 31 DAY")
 
     @staticmethod
-    def get_dates() -> List[str]:
+    def get_str_dates() -> List[str]:
         dates = []
         cur = query("SELECT distinct date_collected FROM statistics ORDER BY id DESC")
         for row in cur.fetchall():
             dates.append(str(row[0]))
+        return dates
+
+    @staticmethod
+    def get_dates() -> List[date]:
+        dates = []
+        cur = query("SELECT distinct date_collected FROM statistics ORDER BY id DESC")
+        for row in cur.fetchall():
+            dates.append(row[0])
         return dates
 
     @staticmethod
