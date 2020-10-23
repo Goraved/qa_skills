@@ -1,11 +1,10 @@
 import os
 
 import MySQLdb
-from MySQLdb import connection
 from MySQLdb.cursors import Cursor
 
-DB: connection = None
-cached_data: dict = None
+DB = None
+cached_data = None
 
 
 def get_cached_data() -> dict:
