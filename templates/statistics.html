@@ -51,8 +51,8 @@
     <h2>(Total vacancies : {{t['vac_count']}})</h2>
     <h3>Collected at <select onchange="window.document.location.href=this.options[this.selectedIndex].value;">
         {% for date in dates %}
-        {% if t['date_collected'] == date %}
-        <option selected value="/statistic/{{t['date_collected']}}">{{t['date_collected']}}</option>
+        {% if t.date_collected == date %}
+        <option selected value="/statistic/{{t.date_collected}}">{{t.date_collected}}</option>
         {% else %}
         <option value="/statistic/{{date}}" style="color:black">{{date}}</option>
         {% endif %}
@@ -90,10 +90,11 @@
         <tbody>
         {% for stat in stats %}
         <tr>
-            <td data-label="Skill"><a href="/skill/{{stat['id']}}">{{stat['title']}}</a></td>
-            <td data-label="Percent (%)">{{stat['percent']}}</a> </td>
+            <td data-label="Skill"><a href="/skill/{{stat.stat_id}}">{{stat.title}}</a></td>
+            <td data-label="Percent (%)">{{stat.percent}}</a> </td>
             {% for t in tech %}
-            <td data-label="Count (#)"><a href="/skill_vacancies/{{stat['id']}}_{{t['date_collected']}}">{{stat['count']}}</a>
+            <td data-label="Count (#)"><a
+                    href="/skill_vacancies/{{stat.stat_id}}_{{t.date_collected}}">{{stat.count}}</a>
             </td>
             {% endfor %}
         </tr>
@@ -117,12 +118,12 @@
         <tbody>
         {% for link in links %}
         <tr>
-            <td data-label="Vacancy"><a href='{{link["vacancy_link"]}}'
-                                        target=_blank>{{link['vacancy_title']}}</a></td>
-            <td data-label="Company"><a href='{{link["company_link"]}}'
-                                        target=_blank>{{link['company_title']}}</a>
+            <td data-label="Vacancy"><a href='{{link.vacancy_link}}'
+                                        target=_blank>{{link.vacancy_title}}</a></td>
+            <td data-label="Company"><a href='{{link.company_link}}'
+                                        target=_blank>{{link.company_title}}</a>
             </td>
-            <td data-label="City">{{link['city_title']}}</td>
+            <td data-label="City">{{link.city_title}}</td>
         </tr>
         {% endfor %}
         </tbody>
@@ -142,8 +143,8 @@
         </thead>
         <tbody> {% for position in positions %}
         <tr>
-            <td data-label="Position">{{position['title']}}</td>
-            <td data-label="Count">{{position['count']}}</td>
+            <td data-label="Position">{{position.title}}</td>
+            <td data-label="Count">{{position.count}}</td>
         </tr>
         {% endfor %}
         </tbody>
@@ -162,8 +163,8 @@
         </thead>
         <tbody>{% for way in ways %}
         <tr>
-            <td data-label="Way">{{way['title']}}</td>
-            <td data-label="Count">{{way['count']}}</td>
+            <td data-label="Way">{{way.title}}</td>
+            <td data-label="Count">{{way.count}}</td>
         </tr>
         {% endfor %}
         </tbody>

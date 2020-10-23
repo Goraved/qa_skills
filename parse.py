@@ -1,8 +1,15 @@
+import asyncio
 import copy
 import multiprocessing as mp
+import re
 
-from data import *
-from helper import *
+import requests
+from lxml import html
+
+from helper import get_vacancies, headers, find_in_text
+from models.position import get_positions
+from models.skill import get_skills
+from models.way import get_ways
 
 
 class Stat:
@@ -41,7 +48,7 @@ class GetStat:
         del result
         return self.st, vac_skills
 
-    def vacancy_stats(self, link, title):
+    def vacancy_stats(self, link: str, title: str) -> dict:
         st = copy.deepcopy(self.st)
         vacancy = requests.get(link.replace('\\', '').replace('"', ""), headers=headers)
         # html_text = html.fromstring(vacancy.text)

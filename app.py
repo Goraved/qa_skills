@@ -1,9 +1,20 @@
+import os
 import random
 import string
 import threading
+from datetime import datetime
 
 from flask import Flask, render_template, redirect, url_for, request, jsonify
 
+from data import set_cached_data, get_cached_data
+from graphs import get_stats, get_languages_comparison, get_skill_stats, clear_plt
+from helper import clear_cached_data
+from models.position import Position
+from models.skill import get_skill_list
+from models.statistic import Statistic
+from models.task import Task
+from models.vacancy import Vacancy, get_vacancies_by_skill
+from models.way import Way
 from parse import *
 
 app = Flask(__name__)
@@ -17,10 +28,10 @@ class AsyncTask(threading.Thread):
 
     def run(self):
         st, vac_skills = self.get_st.get_statistics()
-        save_positions(st.positions)
-        save_statistics(st.skill_percent, st.skills)
-        save_ways(st.ways)
-        save_vacancies(st.total_info, vac_skills)
+        Position.save_positions(st.positions)
+        Statistic.save_statistics(st.skill_percent, st.skills)
+        Way.save_ways(st.ways)
+        Vacancy.save_vacancies(st.total_info, vac_skills)
         clear_cached_data()
         st.positions = {}
         st.ways = {}
@@ -29,8 +40,9 @@ class AsyncTask(threading.Thread):
         st.total_info = []
         iloop = asyncio.new_event_loop()
         asyncio.set_event_loop(iloop)
-        tasks = [complete_task(self.task_id), delete_stats_older_than_month(), delete_vacancies_older_than_month(),
-                 delete_ways_older_than_month(), delete_positions_older_than_month()]
+        tasks = [Task(self.task_id).complete_task(), Statistic.delete_stats_older_than_month(),
+                 Vacancy.delete_vacancies_older_than_month(),
+                 Way.delete_ways_older_than_month(), Position.delete_positions_older_than_month()]
         iloop.run_until_complete(asyncio.wait(tasks))
 
 
@@ -43,16 +55,16 @@ def main():
 @app.route('/get_stat', methods=['POST'])
 def get_stat():
     task_id = ''.join([random.choice(string.digits) for _ in range(16)])
-    create_task(task_id)
+    Task(task_id).create_task()
     async_task = AsyncTask(task_id=task_id)
     async_task.start()
-    task_status_url = url_for('task_status', task_id=task_id)
+    url_for('task_status', task_id=task_id)
     return task_id
 
 
 @app.route('/TaskStatus/<int:task_id>')
 def task_status(task_id):
-    return get_task_state(task_id)
+    return Task(task_id).get_task_state()
 
 
 @app.route('/save_data')
@@ -68,7 +80,7 @@ def save_data():
 # STATS
 @app.route("/statistics")
 def show_latest_statistics():
-    dates = get_dates()
+    dates = Statistic.get_dates()
     info = get_stats(dates[0])
     set_cached_data(dict(stats=info[1], positions=info[2], ways=info[3]))
     return render_template('statistics.html', links=info[0], stats=info[1], positions=info[2], ways=info[3],
@@ -80,7 +92,7 @@ def get_latest_statistics_endpoint():
     if get_cached_data():
         return jsonify(get_cached_data())
     else:
-        dates = get_dates()
+        dates = Statistic.get_dates()
         info = get_stats(dates[0])
         cached_data = dict(stats=info[1], positions=info[2], ways=info[3])
         set_cached_data(cached_data)
@@ -97,7 +109,7 @@ def get_language_comparison_endpoint():
 
 @app.route("/statistic/<date>")
 def show_specific_statistics(date):
-    dates = get_dates()
+    dates = Statistic.get_dates()
     try:
         info = get_stats(date)
         return render_template('statistics.html', links=info[0], stats=info[1], positions=info[2], ways=info[3],
@@ -147,7 +159,7 @@ def get_vac():
 
 @app.route("/skill_vacancies/<skill_id>_<date>")
 def show_vacancies_by_specific_skill(skill_id, date):
-    dates = get_dates()
+    dates = Statistic.get_dates()
     skills = get_skill_list()
     selected = [_ for _ in skills if _['id'] == int(skill_id)][0]
     vacancies = get_vacancies_by_skill(date, selected['name'])['vacancies']
@@ -157,7 +169,7 @@ def show_vacancies_by_specific_skill(skill_id, date):
 
 @app.route("/skill_vacancies")
 def show_vacancies_by_skill():
-    dates = get_dates()
+    dates = Statistic.get_dates()
     skills = get_skill_list()
     selected = [_['id'] for _ in skills if _['id'] == 10][0]
     vacancies = get_vacancies_by_skill(dates[0], selected['name'])['vacancies']
