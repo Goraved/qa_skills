@@ -5,7 +5,8 @@ import re
 import requests
 from lxml import html
 
-from data import set_cached_data, clear_plt
+from data import set_cached_data
+from graphs import clear_plt
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36 OPR/50.0.2762.67',
@@ -53,10 +54,8 @@ async def get_vacancies():
     max_count = 500
     urls = []
     while len(vacancy_links) <= max_count and count < 600:
-        data = [
-            ('csrfmiddlewaretoken', 'c6V5lBXwbscVXZdwSq7KTVYGI58dU0N0s1GFi0uWrRkw00Q4MLIyMKdBjFf3ob7e'),
-            ('count', count),
-        ]
+        data = [('csrfmiddlewaretoken', 'c6V5lBXwbscVXZdwSq7KTVYGI58dU0N0s1GFi0uWrRkw00Q4MLIyMKdBjFf3ob7e'),
+                ('count', count)]
 
         response = requests.post('https://jobs.dou.ua/vacancies/xhr-load/', headers=headers, params=params,
                                  cookies=cookies, data=data)
@@ -72,7 +71,7 @@ async def get_vacancies():
 
 
 def clear_cached_data():
-    set_cached_data(None)
+    set_cached_data({})
     if os.path.exists('static/images/graph.png'):
         os.remove('static/images/graph.png')
     clear_plt()

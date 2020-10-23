@@ -72,9 +72,9 @@
             <tbody>
             {% for stat in stats %}
             <tr>
-                <td data-label="Count (#)">{{stat['skill_count']}}</td>
-                <td data-label="Percent (%)">{{stat['skill_percent']}}</td>
-                <td data-label="Date collected"><a href="/statistic/{{stat['date_collected']}}">{{stat['date_collected']}}</a>
+                <td data-label="Count (#)">{{stat.count}}</td>
+                <td data-label="Percent (%)">{{stat.percent}}</td>
+                <td data-label="Date collected"><a href="/statistic/{{stat.date_collected}}">{{stat.date_collected}}</a>
                 </td>
             </tr>
             {% endfor %}
