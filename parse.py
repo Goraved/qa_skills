@@ -23,7 +23,7 @@ class Stat:
 
 class GetStat:
     def __init__(self):
-        self.st = Stat()
+        self.stat = Stat()
         self.count_of_vac = 0
 
     def get_statistics(self):
@@ -32,9 +32,9 @@ class GetStat:
         tasks = [get_vacancies(), get_skills(), get_positions(), get_ways()]
         async_values = ioloop.run_until_complete(asyncio.gather(*tasks))
         vacancy_links = async_values[0]
-        self.st.skills = async_values[1]
-        self.st.positions = async_values[2]
-        self.st.ways = async_values[3]
+        self.stat.skills = async_values[1]
+        self.stat.positions = async_values[2]
+        self.stat.ways = async_values[3]
         self.count_of_vac = len(vacancy_links)
         ioloop.close()
         # GO to each vacancy
@@ -44,12 +44,12 @@ class GetStat:
         self.merge_lists(result)
         vac_skills = self.get_list_of_skills_in_vacancy(result)
 
-        # pool.close()
+        pool.close()
         del result
-        return self.st, vac_skills
+        return self.stat, vac_skills
 
-    def vacancy_stats(self, link: str, title: str) -> dict:
-        st = copy.deepcopy(self.st)
+    def vacancy_stats(self, link: str, title: str) -> Stat:
+        stat = copy.deepcopy(self.stat)
         vacancy = requests.get(link.replace('\\', '').replace('"', ""), headers=headers)
         # html_text = html.fromstring(vacancy.text)
         html_text = html.fromstring(vacancy.content)
@@ -81,32 +81,32 @@ class GetStat:
         vacancy_description = ''
         # Parse text from all paragraph into one
         for paragraph in description:
-            vacancy_description += "".join([x for x in paragraph.itertext()])
+            vacancy_description += "".join(paragraph.itertext())
         # Search each skill in vacancy
-        st.skills = find_in_text(st.skills, vacancy_description, vacancy_title)
-        st.ways = find_in_text(st.ways, vacancy_title)
-        st.position = find_in_text(st.positions, vacancy_title)
-        st.total_info = {'vacancy_link': vacancy_link, 'vacancy_title': vacancy_title, 'company_link': company_link,
-                         'company_title': company_title, 'city_title': city_title}
-        return st
+        stat.skills = find_in_text(stat.skills, vacancy_description, vacancy_title)
+        stat.ways = find_in_text(stat.ways, vacancy_title)
+        stat.position = find_in_text(stat.positions, vacancy_title)
+        stat.total_info = {'vacancy_link': vacancy_link, 'vacancy_title': vacancy_title, 'company_link': company_link,
+                           'company_title': company_title, 'city_title': city_title}
+        return stat
 
     def merge_lists(self, results):
         positions = [_.positions for _ in results]
         skills = [_.skills for _ in results]
         ways = [_.ways for _ in results]
-        self.st.positions = {k: sum(d[k] for d in positions) for k in positions[0]}
-        self.st.skills = {k: sum(d[k] for d in skills) for k in skills[0]}
-        self.st.ways = {k: sum(d[k] for d in ways) for k in ways[0]}
+        self.stat.positions = {k: sum(d[k] for d in positions) for k in positions[0]}
+        self.stat.skills = {k: sum(d[k] for d in skills) for k in skills[0]}
+        self.stat.ways = {k: sum(d[k] for d in ways) for k in ways[0]}
         self.merge_js()
-        for skill in self.st.skills:
-            percent = str(round(float(self.st.skills[skill] / self.count_of_vac) * 100, 2)) + '%'
-            if self.st.skills[skill] > 0:
-                self.st.skill_percent.update({skill: percent})
-        self.st.total_info = [_.total_info for _ in results]
+        for skill in self.stat.skills:
+            percent = str(round(float(self.stat.skills[skill] / self.count_of_vac) * 100, 2)) + '%'
+            if self.stat.skills[skill] > 0:
+                self.stat.skill_percent.update({skill: percent})
+        self.stat.total_info = [_.total_info for _ in results]
 
     def merge_js(self):
-        self.st.skills['javascript'] += self.st.skills['JS']
-        del self.st.skills['JS']
+        self.stat.skills['javascript'] += self.stat.skills['JS']
+        del self.stat.skills['JS']
 
     @staticmethod
     def get_list_of_skills_in_vacancy(results):

@@ -5,16 +5,16 @@ from MySQLdb.cursors import Cursor
 
 
 DB = None
-cached_data = None
+CACHED_DATA = None
 
 
 def get_cached_data() -> dict:
-    return cached_data
+    return CACHED_DATA
 
 
 def set_cached_data(input_data: dict):
-    global cached_data
-    cached_data = input_data
+    global CACHED_DATA
+    CACHED_DATA = input_data
 
 
 def db_connection():
