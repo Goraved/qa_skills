@@ -9,7 +9,8 @@ from data import set_cached_data
 from graphs import clear_plt
 
 headers = {
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36 OPR/50.0.2762.67',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) '
+                  'Chrome/63.0.3239.132 Safari/537.36 OPR/50.0.2762.67',
     'Referer': 'https://jobs.dou.ua/vacancies/?city=%D0%9A%D0%B8%D0%B5%D0%B2&category=QA',
     'X-Requested-With': 'XMLHttpRequest'
 }

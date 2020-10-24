@@ -1,3 +1,4 @@
+import asyncio
 import os
 import random
 import string
@@ -15,7 +16,7 @@ from models.statistic import Statistic
 from models.task import Task
 from models.vacancy import Vacancy, get_vacancies_by_skill
 from models.way import Way
-from parse import *
+from parse import GetStat, Stat
 
 app = Flask(__name__)
 
@@ -27,17 +28,17 @@ class AsyncTask(threading.Thread):
         self.get_st = GetStat()
 
     def run(self):
-        st, vac_skills = self.get_st.get_statistics()
-        Position.save_positions(st.positions)
-        Statistic.save_statistics(st.skill_percent, st.skills)
-        Way.save_ways(st.ways)
-        Vacancy.save_vacancies(st.total_info, vac_skills)
+        stat, vac_skills = self.get_st.get_statistics()
+        Position.save_positions(stat.positions)
+        Statistic.save_statistics(stat.skill_percent, stat.skills)
+        Way.save_ways(stat.ways)
+        Vacancy.save_vacancies(stat.total_info, vac_skills)
         clear_cached_data()
-        st.positions = {}
-        st.ways = {}
-        st.skill_percent = {}
-        st.skills = {}
-        st.total_info = []
+        stat.positions = {}
+        stat.ways = {}
+        stat.skill_percent = {}
+        stat.skills = {}
+        stat.total_info = []
         iloop = asyncio.new_event_loop()
         asyncio.set_event_loop(iloop)
         tasks = [Task(self.task_id).complete_task(), Statistic.delete_stats_older_than_month(),
@@ -90,7 +91,7 @@ def show_latest_statistics():
 @app.route("/get_statistics", methods=['GET'])
 def get_latest_statistics_endpoint():
     if get_cached_data():
-        return jsonify(get_cached_data())
+        cached_data = jsonify(get_cached_data())
     else:
         dates = Statistic.get_dates()
         info = get_stats(dates[0])
@@ -98,7 +99,8 @@ def get_latest_statistics_endpoint():
         cached_data = dict(stats=[vars(_) for _ in info[1]], positions=[vars(_) for _ in info[2]],
                            ways=[vars(_) for _ in info[3]])
         set_cached_data(cached_data)
-        return jsonify(cached_data)
+        cached_data = jsonify(cached_data)
+    return jsonify(cached_data)
 
 
 @app.route("/get_language_comparison", methods=['GET'])

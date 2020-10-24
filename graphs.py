@@ -51,8 +51,8 @@ def save_graph(stats: List[Statistic], name: str, title='graph'):
         PLT.plot(date_collected, count_skill, label=name)
         PLT.title = title
         PLT.legend(loc="upper left")
-        PLT.ylabel(f'Skill matched in vacancies')
-        PLT.xlabel(f'Date collected')
+        PLT.ylabel('Skill matched in vacancies')
+        PLT.xlabel('Date collected')
         PLT.xticks(rotation=90)
         PLT.savefig(f'static/images/{title}.png')
 
@@ -71,8 +71,8 @@ def get_languages_comparison():
     clear_plt()
     from PIL import Image
     img = Image.open('static/images/languages.png')
-    w, h = img.size
-    img.crop((0, 50, w, h)).save('static/images/languages.png')
+    width, height = img.size
+    img.crop((0, 50, width, height)).save('static/images/languages.png')
 
 
 def clear_plt():
