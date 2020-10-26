@@ -83,7 +83,8 @@ def save_data():
 def show_latest_statistics():
     dates = Statistic.get_dates()
     info = get_stats(dates[0])
-    set_cached_data(dict(stats=info[1], positions=info[2], ways=info[3]))
+    set_cached_data(dict(stats=[vars(_) for _ in info[1]], positions=[vars(_) for _ in info[2]],
+                         ways=[vars(_) for _ in info[3]]))
     return render_template('statistics.html', links=info[0], stats=info[1], positions=info[2], ways=info[3],
                            tech=info[4], dates=dates)
 
