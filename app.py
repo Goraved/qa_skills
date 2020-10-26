@@ -133,7 +133,7 @@ def show_stats_by_skill():
 
 @app.route("/skill/<skill_id>")
 def show_stats_by_specific_skill(skill_id):
-    info = get_skill_stats(skill_id)
+    info = get_skill_stats(int(skill_id))
     return render_template('skill.html', skills=info[1], stats=info[0], selected_skill=info[2])
 
 
@@ -195,3 +195,7 @@ def server_error(error):
 
 if __name__ == "__main__":
     app.run()
+
+
+def create_app():
+    return app

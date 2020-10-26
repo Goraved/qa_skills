@@ -38,7 +38,7 @@ def get_skill_stats(skill_id: int) -> Tuple:
     result = iloop.run_until_complete(asyncio.gather(*tasks))
     stats = result[0]
     skills = result[1]
-    selected_skill = [_ for _ in skills if str(_['id']) == skill_id]
+    selected_skill = [_ for _ in skills if _['id'] == skill_id]
     save_graph(stats, selected_skill[0]["name"])
     return stats, skills, selected_skill
 
