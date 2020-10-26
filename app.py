@@ -101,7 +101,7 @@ def get_latest_statistics_endpoint():
                            ways=[vars(_) for _ in info[3]])
         set_cached_data(cached_data)
         cached_data = jsonify(cached_data)
-    return jsonify(cached_data)
+    return cached_data
 
 
 @app.route("/get_language_comparison", methods=['GET'])
