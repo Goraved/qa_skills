@@ -1,4 +1,4 @@
-name: Python package
+name: Pytest (endpoints health check)
 
 on: [push]
 
