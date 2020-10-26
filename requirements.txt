@@ -16,6 +16,9 @@ mysqlclient
 pillow
 pip
 pylint-fail-under
+pytest
+pytest-flask
+pytest-xdist
 requests
 setuptools
 urllib3
