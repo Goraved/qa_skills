@@ -9,4 +9,4 @@ Pet project to gather all vacancies from Dou.ua, analyze them and make statistic
 * Display analytics by (skill, position, way)
 
 ## Link
-https://qa-skills.herokuapp.com/
+https://qa-skills.herokuapp.com
