@@ -78,9 +78,12 @@ class GetStat:
 
         # Get all html paragraphs
         description = html_text.xpath("//div[@class='l-vacancy']//p")
+        description_list = html_text.xpath("//div[@class='l-vacancy']//ul/li")
         vacancy_description = ''
         # Parse text from all paragraph into one
         for paragraph in description:
+            vacancy_description += "".join(paragraph.itertext())
+        for paragraph in description_list:
             vacancy_description += "".join(paragraph.itertext())
         # Search each skill in vacancy
         stat.skills = find_in_text(stat.skills, vacancy_description, vacancy_title)

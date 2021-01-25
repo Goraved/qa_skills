@@ -52,9 +52,9 @@ async def get_vacancies():
 
     count = 0
 
-    max_count = 500
+    max_count = 800
     urls = []
-    while len(vacancy_links) <= max_count and count < 600:
+    while len(vacancy_links) <= max_count and count < 900:
         data = [('csrfmiddlewaretoken', 'c6V5lBXwbscVXZdwSq7KTVYGI58dU0N0s1GFi0uWrRkw00Q4MLIyMKdBjFf3ob7e'),
                 ('count', count)]
 
