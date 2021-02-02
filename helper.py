@@ -52,9 +52,11 @@ async def get_vacancies():
 
     count = 0
 
-    max_count = 800
+    dou_info = requests.get('https://jobs.dou.ua/vacancies/?category=QA', headers=headers, params=params,
+                            cookies=cookies)
+    max_count = int(html.fromstring(dou_info.text).xpath('//h1')[0].text.split()[0])
     urls = []
-    while len(vacancy_links) <= max_count and count < 900:
+    while len(vacancy_links) < max_count:
         data = [('csrfmiddlewaretoken', 'c6V5lBXwbscVXZdwSq7KTVYGI58dU0N0s1GFi0uWrRkw00Q4MLIyMKdBjFf3ob7e'),
                 ('count', count)]
 
