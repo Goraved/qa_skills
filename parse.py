@@ -89,8 +89,9 @@ class GetStat:
         stat.skills = find_in_text(stat.skills, vacancy_description, vacancy_title)
         stat.ways = find_in_text(stat.ways, vacancy_title)
         stat.position = find_in_text(stat.positions, vacancy_title)
-        stat.total_info = {'vacancy_link': vacancy_link, 'vacancy_title': vacancy_title, 'company_link': company_link,
-                           'company_title': company_title, 'city_title': city_title}
+        stat.total_info = {'vacancy_link': vacancy_link.strip(), 'vacancy_title': vacancy_title.strip(),
+                           'company_link': company_link.strip(), 'company_title': company_title.strip(),
+                           'city_title': city_title.strip()}
         return stat
 
     def merge_lists(self, results):
