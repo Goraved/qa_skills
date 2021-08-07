@@ -11,6 +11,7 @@ from models.skill import get_skills_info
 from models.statistic import get_statistics_by_skill, get_statistics_by_date, Statistic
 from models.vacancy import get_vacancies_statistics_by_date
 from models.way import get_ways_statistics_by_date
+from flask import abort, Response
 
 PLT = plt
 
@@ -39,6 +40,8 @@ def get_skill_stats(skill_id: int) -> Tuple:
     stats = result[0]
     skills = result[1]
     selected_skill = [_ for _ in skills if _['id'] == skill_id]
+    if not selected_skill:
+        abort(400, {'message': f'Unknown skill_id - {skill_id}'})
     save_graph(stats, selected_skill[0]["name"])
     return stats, skills, selected_skill
 

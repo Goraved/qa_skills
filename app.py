@@ -5,7 +5,7 @@ import string
 import threading
 from datetime import datetime
 
-from flask import Flask, render_template, redirect, url_for, request, jsonify
+from flask import Flask, render_template, redirect, url_for, request, jsonify, abort
 
 from data import set_cached_data, get_cached_data
 from graphs import get_stats, get_languages_comparison, get_skill_stats, clear_plt
@@ -113,7 +113,7 @@ def get_language_comparison_endpoint():
 
 
 @app.route("/statistic/<date>")
-def show_specific_statistics(date):
+def show_specific_statistics(date: datetime):
     dates = Statistic.get_str_dates()
     try:
         info = get_stats(date)
@@ -132,7 +132,9 @@ def show_stats_by_skill():
 
 
 @app.route("/skill/<skill_id>")
-def show_stats_by_specific_skill(skill_id):
+def show_stats_by_specific_skill(skill_id: str):
+    if not skill_id.isnumeric():
+        abort(400)
     info = get_skill_stats(int(skill_id))
     return render_template('skill.html', skills=info[1], stats=info[0], selected_skill=info[2])
 
@@ -191,6 +193,11 @@ def page_not_found(error):
 @app.errorhandler(500)
 def server_error(error):
     return render_template('500.html', title='500'), 500
+
+
+@app.errorhandler(400)
+def client_error(error):
+    return render_template('400.html', title='400'), 400
 
 
 if __name__ == "__main__":
