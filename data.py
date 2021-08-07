@@ -51,7 +51,7 @@ def query(sql: str, **kwargs) -> Cursor:
                 cursor.execute(sql)
             DB.commit()
             break
-        except Exception as e:
-            print(f'SQL Error - {e} for query - {sql}')
+        except Exception as error:
+            print(f'SQL Error - {error} for query - {sql}')
             db_connection()
     return cursor

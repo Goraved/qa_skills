@@ -134,7 +134,7 @@ def show_stats_by_skill():
 @app.route("/skill/<skill_id>")
 def show_stats_by_specific_skill(skill_id: str):
     if not skill_id.isnumeric():
-        abort(400)
+        abort(400, f'Unknown skill_id - "{skill_id}"')
     info = get_skill_stats(int(skill_id))
     return render_template('skill.html', skills=info[1], stats=info[0], selected_skill=info[2])
 
@@ -186,18 +186,19 @@ def show_vacancies_by_skill():
 
 # ERRORS
 @app.errorhandler(404)
-def page_not_found(error):
+def page_not_found():
     return render_template('404.html', title='404'), 404
 
 
 @app.errorhandler(500)
-def server_error(error):
+def server_error():
     return render_template('500.html', title='500'), 500
 
 
 @app.errorhandler(400)
 def client_error(error):
-    return render_template('400.html', title='400'), 400
+    error = str(error).replace('400 Bad Request: ', '')
+    return render_template('400.html', title='400', error_msg=error), 400
 
 
 if __name__ == "__main__":
