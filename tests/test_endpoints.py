@@ -1,6 +1,6 @@
 import pytest
 
-from app import create_app
+from index import create_app
 from models.statistic import Statistic
 
 
