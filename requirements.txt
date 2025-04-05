@@ -12,14 +12,14 @@ idna
 itsdangerous
 lxml
 matplotlib
-mysqlclient
+mysql-connector
 pillow
 pip
 pylint-fail-under
 pytest
 pytest-flask
 pytest-xdist
-requests
+httpx
 setuptools
 urllib3
 wheel

@@ -1,34 +1,27 @@
-import asyncio
+"""Skill related functionality"""
+from typing import List, Dict, Any
 
 from data import query
-
+from common_utils import get_all_by_table
 
 class Skill:
-    def __init__(self):
-        pass
+    """Skill container class"""
+    def __init__(self, skill_id: int = None, name: str = None):
+        self.id = skill_id
+        self.name = name
 
+def get_skills() -> Dict[str, int]:
+    """Get all skills as a dictionary with zero counts"""
+    skills = get_all_by_table('skills')
+    return {name: 0 for name in skills}
 
-async def get_skills():
-    await asyncio.sleep(0)
-    skills = {}
-    cur = query("SELECT * FROM skills")
-    for row in cur.fetchall():
-        skills.update({row[1]: 0})
-    return skills
-
-
-async def get_skills_info():
-    await asyncio.sleep(0)
+def get_skills_info() -> List[Dict[str, Any]]:
+    """Get all skills with their IDs"""
     skills = []
-    cur = query('SELECT id, name FROM skills ORDER BY name')
-    for row in cur.fetchall():
+    rows = query('SELECT id, name FROM skills ORDER BY name')
+    for row in rows:
         skills.append({'id': row[0], 'name': row[1]})
     return skills
 
-
-def get_skill_list():
-    skills = []
-    cur = query('SELECT id, name FROM skills ORDER BY name')
-    for row in cur.fetchall():
-        skills.append({'id': row[0], 'name': row[1]})
-    return skills
+# Alias for backward compatibility
+get_skill_list = get_skills_info
